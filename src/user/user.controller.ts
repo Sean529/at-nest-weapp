@@ -21,4 +21,14 @@ export class UserController {
   async findOne(@Query() query: any) {
     return this.userService.findOne(query.token);
   }
+
+  @Get('code2Session')
+  async code2Session(@Query() query: any) {
+    return this.userService.code2Session(query.code);
+  }
+
+  @Get('getGitee')
+  async getGitee() {
+    return this.userService.getGitee();
+  }
 }

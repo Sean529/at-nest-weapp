@@ -4,6 +4,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
 export type UserDocument = User & Document;
+
 @Schema()
 export class User extends Document {
   @Prop()
@@ -13,5 +14,11 @@ export class User extends Document {
   avatar: string;
   @Prop()
   gender: number; // 0 1 2
+  @Prop()
+  openId: string;
+  @Prop()
+  createTime: number;
+  @Prop()
+  updateTime: number;
 }
 export const UserSchema = SchemaFactory.createForClass(User);
