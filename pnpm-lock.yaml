@@ -21,7 +21,7 @@ specifiers:
   jest: ^27.2.5
   mongoose: ^6.3.4
   nestjs-http-promise: ^1.2.3
-  nestjs-redis: ^1.3.3
+  nestjs-redis: git+https://github.com/GyanendroKh/nestjs-redis.git#nest8-fix
   prettier: ^2.3.2
   reflect-metadata: ^0.1.13
   rimraf: ^3.0.2
@@ -42,7 +42,7 @@ dependencies:
   ioredis: 5.0.5
   mongoose: 6.3.4
   nestjs-http-promise: 1.2.3_97374cc05741cbbb0d164b20788da3bc
-  nestjs-redis: 1.3.3_@nestjs+platform-express@8.4.5
+  nestjs-redis: github.com/GyanendroKh/nestjs-redis/0b1f99ac8ec0c7f2ae64f8cd30b32b7ad324cfaf_@nestjs+platform-express@8.4.5
   reflect-metadata: 0.1.13
   rimraf: 3.0.2
   rxjs: 7.5.5
@@ -4169,29 +4169,6 @@ packages:
       - debug
     dev: false
 
-  /nestjs-redis/1.3.3_@nestjs+platform-express@8.4.5:
-    resolution: {integrity: sha512-YLvWtVKP38Uica7pL8T955jPi0MFmJ4+Wj3R/IHbLpsdCJkdA9wtfO9NoUpiZpM1aO1dEGcOBoStvgb0Uy7MGA==}
-    dependencies:
-      '@nestjs/common': 7.6.18_8e6d4b7501d9d25f42cbf34563d4f5bc
-      '@nestjs/core': 7.6.18_98af88bb36ff502d52ae2eddb5165b8f
-      '@types/ioredis': 4.28.10
-      '@types/uuid': 8.3.4
-      ioredis: 4.28.5
-      reflect-metadata: 0.1.13
-      rxjs: 6.6.7
-      uuid: 8.3.2
-    transitivePeerDependencies:
-      - '@nestjs/microservices'
-      - '@nestjs/platform-express'
-      - '@nestjs/websockets'
-      - cache-manager
-      - class-transformer
-      - class-validator
-      - debug
-      - encoding
-      - supports-color
-    dev: false
-
   /node-emoji/1.11.0:
     resolution: {integrity: sha512-wo2DpQkQp7Sjm2A0cq+sN7EHKO6Sl0ctXeBdFZrL9T9+UywORbufTcTZxom8YqpLQt/FqNMUkOpkZrJVYSKD3A==}
     dependencies:
@@ -5643,3 +5620,29 @@ packages:
     resolution: {integrity: sha512-Ux4ygGWsu2c7isFWe8Yu1YluJmqVhxqK2cLXNQA5AcC3QfbGNpM7fu0Y8b/z16pXLnFxZYvWhd3fhBY9DLmC6Q==}
     engines: {node: '>=6'}
     dev: true
+
+  github.com/GyanendroKh/nestjs-redis/0b1f99ac8ec0c7f2ae64f8cd30b32b7ad324cfaf_@nestjs+platform-express@8.4.5:
+    resolution: {tarball: https://codeload.github.com/GyanendroKh/nestjs-redis/tar.gz/0b1f99ac8ec0c7f2ae64f8cd30b32b7ad324cfaf}
+    id: github.com/GyanendroKh/nestjs-redis/0b1f99ac8ec0c7f2ae64f8cd30b32b7ad324cfaf
+    name: nestjs-redis
+    version: 1.3.3
+    dependencies:
+      '@nestjs/common': 7.6.18_8e6d4b7501d9d25f42cbf34563d4f5bc
+      '@nestjs/core': 7.6.18_98af88bb36ff502d52ae2eddb5165b8f
+      '@types/ioredis': 4.28.10
+      '@types/uuid': 8.3.4
+      ioredis: 4.28.5
+      reflect-metadata: 0.1.13
+      rxjs: 6.6.7
+      uuid: 8.3.2
+    transitivePeerDependencies:
+      - '@nestjs/microservices'
+      - '@nestjs/platform-express'
+      - '@nestjs/websockets'
+      - cache-manager
+      - class-transformer
+      - class-validator
+      - debug
+      - encoding
+      - supports-color
+    dev: false

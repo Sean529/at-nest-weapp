@@ -31,4 +31,9 @@ export class UserController {
   async getGitee() {
     return this.userService.getGitee();
   }
+
+  @Get('test')
+  async test() {
+    return this.userService.test();
+  }
 }

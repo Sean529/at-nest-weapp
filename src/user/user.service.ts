@@ -4,13 +4,14 @@ import { User, UserDocument } from 'src/schema/user.schema';
 import { CreateUserDto, CreateUserInfoDto } from './user.dto';
 import { Injectable } from '@nestjs/common';
 import { HttpService } from 'nestjs-http-promise';
+import { CacheService } from '../cache/cache.service';
 
 @Injectable()
 export class UserService {
-  // 注册 Schema 后，可以使用 @InjectModel() 装饰器将 User 模型注入到 UserService 中:
   constructor(
     @InjectModel('User') private userTest: Model<UserDocument>,
     private readonly httpService: HttpService,
+    private readonly cacheService: CacheService,
   ) {}
 
   // 添加
@@ -118,5 +119,16 @@ export class UserService {
   async getGitee(): Promise<any> {
     const google = await this.httpService.get('https://gitee.com/');
     return google.data;
+  }
+
+  async test() {
+    await this.cacheService.set('name', 'AT');
+    const temp = await this.cacheService.get('name');
+    console.log(
+      '%c AT-🥝 temp 🥝-127',
+      'font-size:13px; background:#de4307; color:#f6d04d;',
+      temp,
+    );
+    return temp;
   }
 }
