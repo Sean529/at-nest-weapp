@@ -13,16 +13,16 @@ export class CacheService {
     this.client = await this.redisService.getClient();
   }
 
-  // 设置值
-  async set(key: string, value: any, seconds?: number) {
+  // 设置值，失效时间单位是毫秒
+  async set(key: string, value: any, time?: number) {
     value = JSON.stringify(value);
     if (!this.client) {
       await this.getClient();
     }
-    if (!seconds) {
+    if (!time) {
       await this.client.set(key, value);
     } else {
-      await this.client.set(key, value, 'EX', seconds);
+      await this.client.set(key, value, 'EX', time);
     }
   }
 
