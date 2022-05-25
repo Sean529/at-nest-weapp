@@ -49,8 +49,9 @@ export class UserService {
     };
   }
 
-  getToken(sessionKey: string, openId: string): string {
-    return `${sessionKey}_${openId}`;
+  // TODO: token 生成方式需参考下业内方案
+  createToken(sessionKey: string, openId: string): string {
+    return `${openId}_${sessionKey}`;
   }
 
   async openIdFindUserInfo(openId: string): Promise<any> {
@@ -66,6 +67,7 @@ export class UserService {
     avatar,
   }: CreateUserInfoDto) {
     const userInfo: CreateUserInfoDto = {
+      userId: 'mock0',
       openId,
       nickname: nickname || '',
       gender: gender || 0,
@@ -84,22 +86,22 @@ export class UserService {
       code,
     );
 
-    // 1. sessionKey + openId 生成 token
-    const token = this.getToken(sessionKey, openId);
+    // 生成 token
+    const token = this.createToken(sessionKey, openId);
 
-    // 2. 拿 openId 去数据库查用户信息
-
-    // 3. 存入 Redis
-
-    const userInfo = await this.openIdFindUserInfo(openId);
+    // 使用 openId 去数据库查用户信息
+    let userInfo = await this.openIdFindUserInfo(openId);
 
     // 如果数据库中没有用户信息，则创建一条
     if (!userInfo) {
-      const data = await this.createUserInfo({ openId });
+      userInfo = await this.createUserInfo({ openId });
     }
 
     // 缓存 token 到 Redis
+    const TWO_DAYS = 2 * 24 * 3600 * 1000; // 两天的缓存时间，设置的比微信缓存时间短一点（3天）
+    await this.cacheService.set('token', token, TWO_DAYS);
 
+    // 通过小程序的 code 获取微信服务的 session_key 时出错，则将错误信息抛给前端
     if (errCode !== 200) {
       return {
         code: errCode,
@@ -111,8 +113,10 @@ export class UserService {
     return {
       code: 200,
       data: {
-        openId,
+        userInfo,
+        token,
       },
+      msg: '',
     };
   }
 

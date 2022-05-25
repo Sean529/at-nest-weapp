@@ -20,5 +20,7 @@ export class User extends Document {
   createTime: number;
   @Prop()
   updateTime: number;
+  @Prop()
+  userId: string;
 }
 export const UserSchema = SchemaFactory.createForClass(User);
