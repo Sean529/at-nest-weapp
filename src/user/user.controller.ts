@@ -1,5 +1,5 @@
 // 引入 Nest.js 内置的各个功能
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, Headers } from '@nestjs/common';
 // 引入用户服务
 import { UserService } from './user.service';
 // 引入创建用户 DTO 用于限制从接口处传来的参数
@@ -16,11 +16,13 @@ export class UserController {
     return this.userService.findOne(query.token);
   }
 
-  @Get('code2Session')
-  async code2Session(@Query() query: any) {
-    return this.userService.code2Session(query.code);
+  // code2Session
+  @Post('code2Session')
+  async code2Session(@Body() body: any) {
+    return this.userService.code2Session(body.code);
   }
 
+  // 更新用户信息
   @Post('updateUserInfo')
   async updateUserInfo(@Body() body: UserInfoDto) {
     return this.userService.updateUserInfo(body);
@@ -34,5 +36,11 @@ export class UserController {
   @Get('test')
   async test() {
     return this.userService.test();
+  }
+
+  // 获取用户信息
+  @Get('getUserInfo')
+  async getUserInfo(@Headers('token') token: string) {
+    return this.userService.getUserInfo(token);
   }
 }

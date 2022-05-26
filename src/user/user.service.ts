@@ -119,11 +119,6 @@ export class UserService {
   async test() {
     await this.cacheService.set('name', 'AT');
     const temp = await this.cacheService.get('name');
-    console.log(
-      '%c AT-🥝 temp 🥝-127',
-      'font-size:13px; background:#de4307; color:#f6d04d;',
-      temp,
-    );
     return temp;
   }
 
@@ -166,5 +161,50 @@ export class UserService {
     }
 
     return await this.saveUserInfoToDB({ openId, userInfo });
+  }
+
+  // 返回用户信息
+  resultUserInfo(userInfo: UserInfoDto): any {
+    return {
+      code: 200,
+      msg: '',
+      data: userInfo,
+    };
+  }
+
+  // 获取用户信息
+  async getUserInfo(token: string): Promise<UserInfoDto & any> {
+    // 无 token
+    if (!token) {
+      return {
+        code: 401,
+        msg: 'token 不存在',
+        data: null,
+      };
+    }
+
+    // 从 token 中获取 openId
+    const [openId] = token.split('_');
+
+    // 从 Redis 中获取用户信息
+    const userRedis = await this.cacheService.get(openId);
+    if (userRedis) {
+      // 返回用户信息
+      return this.resultUserInfo(userRedis);
+    }
+
+    // 从数据库中获取用户信息
+    const userDB = await this.userTest.findOne({ openId });
+    if (!userDB) {
+      return {
+        code: 400,
+        msg: '用户不存在',
+        data: null,
+      };
+    }
+    // 更新 redis 用户信息
+    await this.cacheService.set(openId, userDB);
+    // 返回用户信息
+    return this.resultUserInfo(userRedis);
   }
 }
