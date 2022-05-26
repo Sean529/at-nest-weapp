@@ -97,10 +97,6 @@ export class UserService {
       userInfo = await this.createUserInfo({ openId });
     }
 
-    // 缓存 token 到 Redis
-    const TWO_DAYS = 2 * 24 * 3600 * 1000; // 两天的缓存时间，设置的比微信缓存时间短一点（3天）
-    await this.cacheService.set('token', token, TWO_DAYS);
-
     // 通过小程序的 code 获取微信服务的 session_key 时出错，则将错误信息抛给前端
     if (errCode !== 200) {
       return {
@@ -109,6 +105,13 @@ export class UserService {
         data: null,
       };
     }
+
+    // 缓存 token 到 Redis
+    const TWO_DAYS = 2 * 24 * 3600 * 1000; // 两天的缓存时间，设置的比微信缓存时间短一点（3天）
+    await this.cacheService.set('token', token, TWO_DAYS);
+
+    // 将用户信息缓存到 redis
+    await this.cacheService.set(openId, userInfo, TWO_DAYS);
 
     return {
       code: 200,
