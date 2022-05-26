@@ -1,7 +1,7 @@
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from 'src/schema/user.schema';
-import { CreateUserDto, CreateUserInfoDto } from './user.dto';
+import { UserInfoDto } from './user.dto';
 import { Injectable } from '@nestjs/common';
 import { HttpService } from 'nestjs-http-promise';
 import { CacheService } from '../cache/cache.service';
@@ -13,13 +13,6 @@ export class UserService {
     private readonly httpService: HttpService,
     private readonly cacheService: CacheService,
   ) {}
-
-  // 添加
-  async create(createUserDto: CreateUserDto): Promise<User> {
-    const createUser = new this.userTest(createUserDto);
-    const temp = await createUser.save();
-    return temp;
-  }
 
   // 查找
   async findOne(name: string): Promise<User[]> {
@@ -60,13 +53,8 @@ export class UserService {
     return temp;
   }
 
-  async createUserInfo({
-    openId,
-    nickname,
-    gender,
-    avatar,
-  }: CreateUserInfoDto) {
-    const userInfo: CreateUserInfoDto = {
+  async createUserInfo({ openId, nickname, gender, avatar }: UserInfoDto) {
+    const userInfo: UserInfoDto = {
       userId: 'mock0',
       openId,
       nickname: nickname || '',
@@ -137,5 +125,46 @@ export class UserService {
       temp,
     );
     return temp;
+  }
+
+  // 保存用户信息到数据库和缓存
+  async saveUserInfoToDB({ openId, userInfo }): Promise<any> {
+    const updateTime = new Date().getTime();
+
+    // 更新数据库中用户信息
+    const temp = await this.userTest.updateOne(
+      { openId },
+      { ...userInfo, updateTime },
+    );
+
+    // 更新 redis 用户信息
+    await this.cacheService.set(openId, userInfo);
+
+    return {
+      code: 200,
+      msg: '',
+      data: temp,
+    };
+  }
+
+  // 更新用户信息
+  async updateUserInfo(userInfo: UserInfoDto): Promise<any> {
+    const { openId } = userInfo;
+    // 通过 openId 从 Redis 中获取用户信息
+    const userRedis = await this.cacheService.get(openId);
+    if (userRedis) {
+      return await this.saveUserInfoToDB({ openId, userInfo });
+    }
+
+    const userDB = await this.userTest.findOne({ openId });
+    if (!userDB) {
+      return {
+        code: 400,
+        msg: '用户不存在',
+        data: null,
+      };
+    }
+
+    return await this.saveUserInfoToDB({ openId, userInfo });
   }
 }

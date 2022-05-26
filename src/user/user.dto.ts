@@ -4,7 +4,7 @@ export class CreateUserDto {
   readonly avatar: string;
 }
 
-export class CreateUserInfoDto {
+export class UserInfoDto {
   readonly nickname?: string;
   readonly gender?: number;
   readonly avatar?: string;
