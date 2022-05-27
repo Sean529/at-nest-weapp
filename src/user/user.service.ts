@@ -21,11 +21,11 @@ export class UserService {
     return temp;
   }
 
-  async getCode2Session(code: string): Promise<any> {
+  async getlogin(code: string): Promise<any> {
     // 使用爱上刷题小程序进行测试
     const params = `appid=wxf5783118732fbb3b&secret=afd85101b32c44de9ccf0083c7096d62&js_code=${code}&grant_type=authorization_code`;
     const res = await this.httpService.get(
-      `https://api.weixin.qq.com/sns/jscode2session?${params}`,
+      `https://api.weixin.qq.com/sns/jslogin?${params}`,
     );
     const { data } = res;
     if (data?.errcode) {
@@ -69,8 +69,8 @@ export class UserService {
     return temp;
   }
 
-  async code2Session(code: string): Promise<any> {
-    const { openId, sessionKey, errCode, errMsg } = await this.getCode2Session(
+  async login(code: string): Promise<any> {
+    const { openId, sessionKey, errCode, errMsg } = await this.getlogin(
       code,
     );
 

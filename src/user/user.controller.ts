@@ -16,10 +16,10 @@ export class UserController {
     return this.userService.findOne(query.token);
   }
 
-  // code2Session
-  @Post('code2Session')
-  async code2Session(@Body() body: any) {
-    return this.userService.code2Session(body.code);
+  // login
+  @Post('login')
+  async login(@Body() body: any) {
+    return this.userService.login(body.code);
   }
 
   // 更新用户信息
