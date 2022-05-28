@@ -5,6 +5,7 @@ import { UserInfoDto } from './user.dto';
 import { Injectable } from '@nestjs/common';
 import { HttpService } from 'nestjs-http-promise';
 import { CacheService } from '../cache/cache.service';
+import { generateId } from '../utils';
 
 @Injectable()
 export class UserService {
@@ -54,8 +55,9 @@ export class UserService {
   }
 
   async createUserInfo({ openId, nickname, gender, avatar }: UserInfoDto) {
+    const userId = await generateId();
     const userInfo: UserInfoDto = {
-      userId: 'mock0',
+      userId,
       openId,
       nickname: nickname || '',
       gender: gender || 0,
