@@ -3,10 +3,8 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 // SchemaFactory 是 mongoose 内置的一个方法做用是读取模式文档 并创建 Schema 对象
 import { Document } from 'mongoose';
 
-export type UserDocument = User & Document;
-
 @Schema()
-export class User extends Document {
+export class UserInfo extends Document {
   @Prop()
   nickname: string;
   // 设置值为必填
@@ -23,4 +21,5 @@ export class User extends Document {
   @Prop()
   userId: string;
 }
-export const UserSchema = SchemaFactory.createForClass(User);
+export const UserSchema = SchemaFactory.createForClass(UserInfo);
+export type UserDocument = UserInfo & Document;

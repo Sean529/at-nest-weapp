@@ -1,6 +1,6 @@
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { User, UserDocument } from 'src/schema/user.schema';
+import { UserInfo, UserDocument } from 'src/schema/user.schema';
 import { UserInfoDto } from './user.dto';
 import { Injectable } from '@nestjs/common';
 import { HttpService } from 'nestjs-http-promise';
@@ -9,23 +9,23 @@ import { CacheService } from '../cache/cache.service';
 @Injectable()
 export class UserService {
   constructor(
-    @InjectModel('User') private userTest: Model<UserDocument>,
+    @InjectModel('UserInfo') private userTest: Model<UserDocument>,
     private readonly httpService: HttpService,
     private readonly cacheService: CacheService,
   ) {}
 
   // 查找
-  async findOne(name: string): Promise<User[]> {
+  async findOne(name: string): Promise<UserInfo[]> {
     // 这里是异步的
     const temp = await this.userTest.find({ name });
     return temp;
   }
 
-  async getlogin(code: string): Promise<any> {
+  async getLogin(code: string): Promise<any> {
     // 使用爱上刷题小程序进行测试
     const params = `appid=wxf5783118732fbb3b&secret=afd85101b32c44de9ccf0083c7096d62&js_code=${code}&grant_type=authorization_code`;
     const res = await this.httpService.get(
-      `https://api.weixin.qq.com/sns/jslogin?${params}`,
+      `https://api.weixin.qq.com/sns/jscode2session?${params}`,
     );
     const { data } = res;
     if (data?.errcode) {
@@ -70,9 +70,7 @@ export class UserService {
   }
 
   async login(code: string): Promise<any> {
-    const { openId, sessionKey, errCode, errMsg } = await this.getlogin(
-      code,
-    );
+    const { openId, sessionKey, errCode, errMsg } = await this.getLogin(code);
 
     // 生成 token
     const token = this.createToken(sessionKey, openId);
