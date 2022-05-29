@@ -54,10 +54,8 @@ export class UserService {
     return token;
   }
 
-  async openIdFindUserInfo(openId: string): Promise<any> {
-    // 这里是异步的
-    const temp = await this.userTest.findOne({ openId });
-    return temp;
+  async getUserInfoByOpenId(openId: string): Promise<any> {
+    return await this.userTest.findOne({ openId });
   }
 
   async createUserInfo({ openId, nickname, gender, avatar }: UserInfoDto) {
@@ -87,7 +85,7 @@ export class UserService {
     }
 
     // 使用 openId 去数据库查用户信息
-    let userInfo = await this.openIdFindUserInfo(openId);
+    let userInfo = await this.getUserInfoByOpenId(openId);
 
     // 如果数据库中没有用户信息，则创建一条
     if (!userInfo) {
