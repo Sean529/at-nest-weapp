@@ -8,28 +8,16 @@ import { AuthGuard } from '@nestjs/passport';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  // 查找某一个用户路由
-  @Get('findOne')
-  async findOne(@Query() query: any) {
-    return this.userService.findOne(query.token);
-  }
-
-  // login
-  @Post('login')
-  async login(@Body() body: any) {
-    return this.userService.login(body.code);
-  }
-
-  // 更新用户信息
-  @Post('updateUserInfo')
-  async updateUserInfo(@Body() body: UserInfoDto) {
-    return this.userService.updateUserInfo(body);
-  }
-
-  @UseGuards(AuthGuard('jwt'))
   @Get('test')
   async test() {
     return this.userService.test();
+  }
+
+  // 更新用户信息
+  @UseGuards(AuthGuard('jwt'))
+  @Post('updateUserInfo')
+  async updateUserInfo(@Body() body: UserInfoDto) {
+    return this.userService.updateUserInfo(body);
   }
 
   // 获取用户信息
