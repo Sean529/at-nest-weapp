@@ -1,11 +1,13 @@
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { UserInfo, UserDocument } from 'src/schema/user.schema';
-import { UserInfoDto } from './user.dto';
 import { Injectable } from '@nestjs/common';
 import { HttpService } from 'nestjs-http-promise';
+import { JwtService } from '@nestjs/jwt';
+
 import { CacheService } from '../cache/cache.service';
-import { generateId } from '../utils';
+import { generateId, TWO_DAYS, TWO_HOUR } from '../utils';
+import { UserInfoDto } from './user.dto';
 
 @Injectable()
 export class UserService {
@@ -13,6 +15,7 @@ export class UserService {
     @InjectModel('UserInfo') private userTest: Model<UserDocument>,
     private readonly httpService: HttpService,
     private readonly cacheService: CacheService,
+    private readonly jwtService: JwtService,
   ) {}
 
   // 查找
@@ -43,9 +46,12 @@ export class UserService {
     };
   }
 
-  // TODO: token 生成方式需参考下业内方案
-  createToken(sessionKey: string, openId: string): string {
-    return `${openId}_${sessionKey}`;
+  // 生成 token
+  async generateToken(payload): Promise<any> {
+    const { userId } = payload;
+    const token = this.jwtService.sign(payload);
+    await this.cacheService.set(`token_${userId}`, token, TWO_HOUR);
+    return token;
   }
 
   async openIdFindUserInfo(openId: string): Promise<any> {
@@ -67,15 +73,18 @@ export class UserService {
     };
 
     const createUser = new this.userTest(userInfo);
-    const temp = await createUser.save();
-    return temp;
+    return await createUser.save();
   }
 
   async login(code: string): Promise<any> {
     const { openId, sessionKey, errCode, errMsg } = await this.getLogin(code);
 
-    // 生成 token
-    const token = this.createToken(sessionKey, openId);
+    if (errCode !== 200) {
+      return {
+        errCode,
+        errMsg,
+      };
+    }
 
     // 使用 openId 去数据库查用户信息
     let userInfo = await this.openIdFindUserInfo(openId);
@@ -84,6 +93,10 @@ export class UserService {
     if (!userInfo) {
       userInfo = await this.createUserInfo({ openId });
     }
+    const { userId } = userInfo;
+
+    // 生成 token
+    const token = await this.generateToken({ userId, openId });
 
     // 通过小程序的 code 获取微信服务的 session_key 时出错，则将错误信息抛给前端
     if (errCode !== 200) {
@@ -94,12 +107,11 @@ export class UserService {
       };
     }
 
-    // 缓存 token 到 Redis
-    const TWO_DAYS = 2 * 24 * 3600 * 1000; // 两天的缓存时间，设置的比微信缓存时间短一点（3天）
-    await this.cacheService.set('token', token, TWO_DAYS);
+    // 缓存 session_key 到 Redis
+    await this.cacheService.set(`sessionKey_${userId}`, sessionKey, TWO_DAYS);
 
     // 将用户信息缓存到 redis
-    await this.cacheService.set(openId, userInfo, TWO_DAYS);
+    await this.cacheService.set(userId, userInfo, TWO_DAYS);
 
     return {
       code: 200,
@@ -111,11 +123,6 @@ export class UserService {
     };
   }
 
-  async getGitee(): Promise<any> {
-    const google = await this.httpService.get('https://gitee.com/');
-    return google.data;
-  }
-
   async test() {
     await this.cacheService.set('name', 'AT');
     const temp = await this.cacheService.get('name');
@@ -123,17 +130,17 @@ export class UserService {
   }
 
   // 保存用户信息到数据库和缓存
-  async saveUserInfoToDB({ openId, userInfo }): Promise<any> {
+  async saveUserInfoToDB({ userId, userInfo }): Promise<any> {
     const updateTime = new Date().getTime();
 
     // 更新数据库中用户信息
     const temp = await this.userTest.updateOne(
-      { openId },
+      { userId },
       { ...userInfo, updateTime },
     );
 
     // 更新 redis 用户信息
-    await this.cacheService.set(openId, userInfo);
+    await this.cacheService.set(userId, userInfo);
 
     return {
       code: 200,
@@ -144,14 +151,14 @@ export class UserService {
 
   // 更新用户信息
   async updateUserInfo(userInfo: UserInfoDto): Promise<any> {
-    const { openId } = userInfo;
-    // 通过 openId 从 Redis 中获取用户信息
-    const userRedis = await this.cacheService.get(openId);
+    const { userId } = userInfo;
+    // 通过 userId 从 Redis 中获取用户信息
+    const userRedis = await this.cacheService.get(userId);
     if (userRedis) {
-      return await this.saveUserInfoToDB({ openId, userInfo });
+      return await this.saveUserInfoToDB({ userId, userInfo });
     }
 
-    const userDB = await this.userTest.findOne({ openId });
+    const userDB = await this.userTest.findOne({ userId });
     if (!userDB) {
       return {
         code: 400,
@@ -160,7 +167,7 @@ export class UserService {
       };
     }
 
-    return await this.saveUserInfoToDB({ openId, userInfo });
+    return await this.saveUserInfoToDB({ userId, userInfo });
   }
 
   // 返回用户信息
@@ -173,28 +180,21 @@ export class UserService {
   }
 
   // 获取用户信息
-  async getUserInfo(token: string): Promise<UserInfoDto & any> {
-    // 无 token
-    if (!token) {
-      return {
-        code: 401,
-        msg: 'token 不存在',
-        data: null,
-      };
-    }
-
-    // 从 token 中获取 openId
-    const [openId] = token.split('_');
-
+  async getUserInfo(userId: string): Promise<UserInfoDto & any> {
+    console.log(
+      '%c AT 🥝 userId 🥝-182',
+      'font-size:13px; background:#de4307; color:#f6d04d;',
+      userId,
+    );
     // 从 Redis 中获取用户信息
-    const userRedis = await this.cacheService.get(openId);
+    const userRedis = await this.cacheService.get(userId);
     if (userRedis) {
       // 返回用户信息
       return this.resultUserInfo(userRedis);
     }
 
     // 从数据库中获取用户信息
-    const userDB = await this.userTest.findOne({ openId });
+    const userDB = await this.userTest.findOne({ userId });
     if (!userDB) {
       return {
         code: 400,
@@ -203,7 +203,7 @@ export class UserService {
       };
     }
     // 更新 redis 用户信息
-    await this.cacheService.set(openId, userDB);
+    await this.cacheService.set(userId, userDB);
     // 返回用户信息
     return this.resultUserInfo(userRedis);
   }

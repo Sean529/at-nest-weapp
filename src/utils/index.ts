@@ -13,3 +13,9 @@ export const generateId = async (
   const nanoid = customAlphabet(rule, number);
   return await nanoid();
 };
+
+// 两天
+export const TWO_DAYS = 2 * 24 * 3600 * 1000;
+
+// 2h
+export const TWO_HOUR = 2 * 3600 * 1000;

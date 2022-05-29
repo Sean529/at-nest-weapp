@@ -24,7 +24,9 @@
   "dependencies": {
     "@nestjs/common": "^8.0.0",
     "@nestjs/core": "^8.0.0",
+    "@nestjs/jwt": "^8.0.1",
     "@nestjs/mongoose": "^9.1.0",
+    "@nestjs/passport": "^8.2.1",
     "@nestjs/platform-express": "^8.0.0",
     "@nestx-log4js/core": "^1.5.1",
     "ioredis": "^5.0.5",
@@ -33,6 +35,9 @@
     "nanoid": "^3.3.4",
     "nestjs-http-promise": "^1.2.3",
     "nestjs-redis": "git+https://e.coding.net/BGNO/redis-nest8fix/redis-nest8fix.git#nest8-fix",
+    "passport": "^0.6.0",
+    "passport-jwt": "^4.0.0",
+    "passport-local": "^1.0.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0"

@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
+import { Log4jsModule } from '@nestx-log4js/core';
+
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserModule } from './user/user.module';
-import { Log4jsModule } from '@nestx-log4js/core';
 
 @Module({
   imports: [
