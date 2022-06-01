@@ -1,4 +1,11 @@
-import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserInfoDto } from './user.dto';
 import { AuthGuard } from '@nestjs/passport';
@@ -14,16 +21,16 @@ export class UserController {
   }
 
   // 更新用户信息
-  @UseGuards(AuthGuard('jwt'))
   @Post('updateUserInfo')
-  async updateUserInfo(@Body() body: UserInfoDto) {
-    return this.userService.updateUserInfo(body);
+  @UseGuards(AuthGuard('jwt'))
+  async updateUserInfo(@Body() body: UserInfoDto, @Request() request) {
+    return this.userService.updateUserInfo(body, request.user.userId);
   }
 
   // 获取用户信息
-  @UseGuards(AuthGuard('jwt'))
   @Get('getUserInfo')
-  async getUserInfo(@Query() query: any) {
-    return this.userService.getUserInfo(query.userId);
+  @UseGuards(AuthGuard('jwt'))
+  async getUserInfo(@Request() request) {
+    return this.userService.getUserInfo(request.user.userId);
   }
 }

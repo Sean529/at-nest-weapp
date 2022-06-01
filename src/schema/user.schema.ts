@@ -6,20 +6,25 @@ import { Document } from 'mongoose';
 @Schema()
 export class UserInfo extends Document {
   @Prop()
-  nickname: string;
-  // 设置值为必填
-  @Prop()
-  avatar: string;
-  @Prop()
-  gender: number; // 0 1 2
+  userId: string;
+
   @Prop()
   openId: string;
+
+  @Prop()
+  nickname: string;
+
+  @Prop()
+  avatar: string;
+
+  @Prop()
+  gender: number; // 0 1 2
+
   @Prop()
   createTime: number;
+
   @Prop()
   updateTime: number;
-  @Prop()
-  userId: string;
 }
 export const UserSchema = SchemaFactory.createForClass(UserInfo);
 export type UserDocument = UserInfo & Document;

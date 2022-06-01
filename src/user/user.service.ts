@@ -20,14 +20,12 @@ export class UserService {
   }
 
   // 保存用户信息到数据库和缓存
-  async saveUserInfoToDB({ userId, userInfo }): Promise<any> {
-    const updateTime = new Date().getTime();
+  async saveUserInfoToDB(updateUserInfo): Promise<any> {
+    const { userId } = updateUserInfo;
 
     // 更新数据库中用户信息
-    const temp = await this.userInfoModel.updateOne(
-      { userId },
-      { ...userInfo, updateTime },
-    );
+    await this.userInfoModel.updateOne({ userId }, updateUserInfo);
+    const userInfo = await this.userInfoModel.findOne({ userId });
 
     // 更新 redis 用户信息
     await this.cacheService.set(userId, userInfo);
@@ -35,18 +33,21 @@ export class UserService {
     return {
       code: 200,
       msg: '',
-      data: temp,
+      data: userInfo,
     };
   }
 
   // 更新用户信息
-  async updateUserInfo(userInfo: UserInfoDto): Promise<any> {
-    const { userId } = userInfo;
-
+  async updateUserInfo(
+    payloadUserInfo: UserInfoDto,
+    userId: string,
+  ): Promise<any> {
     // 通过 userId 从 Redis 中获取用户信息
     const userRedis = await this.cacheService.get(userId);
+
+    const updateUserInfo = this.getUpdateUserInfo(userId, payloadUserInfo);
     if (userRedis) {
-      return await this.saveUserInfoToDB({ userId, userInfo });
+      return await this.saveUserInfoToDB(updateUserInfo);
     }
 
     const userDB = await this.userInfoModel.findOne({ userId });
@@ -58,8 +59,17 @@ export class UserService {
       };
     }
 
-    return await this.saveUserInfoToDB({ userId, userInfo });
+    return await this.saveUserInfoToDB(updateUserInfo);
   }
+
+  // 组装更新用户信息
+  getUpdateUserInfo = (userId: string, payloadUserInfo: UserInfoDto) => {
+    return {
+      ...payloadUserInfo,
+      userId,
+      updateTime: new Date().getTime(),
+    };
+  };
 
   // 返回用户信息
   resultUserInfo(userInfo: UserInfoDto): any {
