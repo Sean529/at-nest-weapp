@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
+import { EssayModule } from './essay/essay.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { AuthModule } from './auth/auth.module';
     Log4jsModule.forRoot(),
     UserModule,
     AuthModule,
+    EssayModule,
   ],
   controllers: [AppController],
   providers: [AppService],
