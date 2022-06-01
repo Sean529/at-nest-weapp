@@ -1,7 +1,6 @@
 {
-	"cSpell.words": [
-		"ilovewall",
-		"nestjs",
-		"Wechat"
-	]
+  "cSpell.words": ["ilovewall", "nestjs", "Wechat"],
+  "[typescript]": {
+    "editor.defaultFormatter": "SimonSiefke.prettier-vscode"
+  }
 }
