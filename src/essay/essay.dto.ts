@@ -9,3 +9,8 @@ export class EssayDto {
   createTime?: number;
   updateTime?: number;
 }
+
+export class listDto {
+  page?: number;
+  pageSize?: number;
+}
