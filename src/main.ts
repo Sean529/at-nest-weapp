@@ -11,9 +11,9 @@ async function bootstrap() {
   });
 
   app.useLogger(app.get(Log4jsLogger));
-  await app.listen(3000);
+  await app.listen(9529);
 }
 
 bootstrap().then(() => {
-  logger.log('🥝 http://localhost:3000 🥝');
+  logger.log('🥝 http://localhost:9529 🥝');
 });
