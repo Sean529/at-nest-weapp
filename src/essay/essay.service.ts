@@ -45,6 +45,10 @@ export class EssayService {
     page == null && (page = 0);
     pageSize == null && (pageSize = 10);
 
+    // string 转 number
+    page = Number(page);
+    pageSize == Number(pageSize);
+
     // 总条数
     const total: number = await this.EssayModel.find().count();
 
