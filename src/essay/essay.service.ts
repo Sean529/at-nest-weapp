@@ -41,10 +41,7 @@ export class EssayService {
   };
 
   // 文章列表
-  list = async (page: number, pageSize: number): Promise<IResponse> => {
-    page == null && (page = 0);
-    pageSize == null && (pageSize = 10);
-
+  list = async (page = 0, pageSize = 10): Promise<IResponse> => {
     // string 转 number
     page = Number(page);
     pageSize == Number(pageSize);
