@@ -5,7 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { HttpModule } from 'nestjs-http-promise';
 
 import { JwtStrategy } from './jwt.strategy';
-import { jwtConstants } from './constants';
+import { JWT_CONSTANTS } from './constants';
 import { CacheModule } from '../cache/cache.module';
 import { CacheService } from '../cache/cache.service';
 import { UserSchema } from '../schema/user.schema';
@@ -15,8 +15,8 @@ import { AuthService } from './auth.service';
 const jwtModule = JwtModule.registerAsync({
   useFactory: () => {
     return {
-      secret: jwtConstants.secret,
-      signOptions: { expiresIn: '2h' },
+      secret: JWT_CONSTANTS.secret,
+      signOptions: { expiresIn: JWT_CONSTANTS.expiresIn },
     };
   },
 });
