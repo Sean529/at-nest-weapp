@@ -41,9 +41,9 @@ export class EssayService {
   };
 
   // 文章列表
-  list = async (page = 0, pageSize = 10): Promise<IResponse> => {
+  list = async (page = 1, pageSize = 10): Promise<IResponse> => {
     // string 转 number
-    page = Number(page);
+    page = Number(page) - 1; // 数据库从 0 开始计数
     pageSize == Number(pageSize);
 
     // 总条数
