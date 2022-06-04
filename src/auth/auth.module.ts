@@ -22,7 +22,7 @@ const jwtModule = JwtModule.registerAsync({
 });
 
 const mongooseModule = MongooseModule.forFeature([
-  { collection: 'userInfo', name: 'UserInfo', schema: UserSchema },
+  { collection: 'user', name: 'User', schema: UserSchema },
 ]);
 
 @Module({

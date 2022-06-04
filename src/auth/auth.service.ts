@@ -12,7 +12,7 @@ import { generateId, TWO_DAYS, TWO_HOUR } from '../utils';
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectModel('UserInfo') private userInfoModel: Model<UserDocument>,
+    @InjectModel('User') private userModel: Model<UserDocument>,
     private readonly httpService: HttpService,
     private readonly cacheService: CacheService,
     private readonly jwtService: JwtService,
@@ -92,7 +92,7 @@ export class AuthService {
 
   // 库中通过 openId 查用户信息
   async getUserInfoByOpenId(openId: string): Promise<any> {
-    return await this.userInfoModel.findOne({ openId });
+    return await this.userModel.findOne({ openId });
   }
 
   // 生成 token
@@ -116,7 +116,7 @@ export class AuthService {
       updateTime: new Date().getTime(),
     };
 
-    const createUser = new this.userInfoModel(userInfo);
+    const createUser = new this.userModel(userInfo);
     return await createUser.save();
   }
 }

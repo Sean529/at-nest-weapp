@@ -2,14 +2,16 @@ import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 
-import { EssayDocument } from '../schema/essay.schema';
+import { UserEssayDocument } from '../schema/essay.schema';
 import { generateId } from '../utils';
 import { IEssay } from './essay.type';
 import { IResponse } from 'src/type/response.type';
 
 @Injectable()
 export class EssayService {
-  constructor(@InjectModel('Essay') private EssayModel: Model<EssayDocument>) {}
+  constructor(
+    @InjectModel('UserEssay') private EssayModel: Model<UserEssayDocument>,
+  ) {}
 
   // 创建文章
   create = async (body, user): Promise<IResponse> => {
@@ -36,7 +38,7 @@ export class EssayService {
       createTime: new Date().getTime(),
       updateTime: new Date().getTime(),
     };
-    const createEssay: EssayDocument = new this.EssayModel(essayInfo);
+    const createEssay: UserEssayDocument = new this.EssayModel(essayInfo);
     return await createEssay.save();
   };
 

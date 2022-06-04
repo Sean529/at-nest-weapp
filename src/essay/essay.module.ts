@@ -13,7 +13,7 @@ import { CacheService } from '../cache/cache.service';
     HttpModule,
     CacheModule,
     MongooseModule.forFeature([
-      { collection: 'essay', name: 'Essay', schema: EssaySchema },
+      { collection: 'user_essay', name: 'UserEssay', schema: EssaySchema },
     ]),
   ],
   controllers: [EssayController],
