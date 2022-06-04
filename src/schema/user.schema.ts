@@ -20,12 +20,14 @@ export class User extends Document {
   @Prop({
     description: '昵称',
     default: '',
+    trim: true,
   })
   nickname: string;
 
   @Prop({
     description: '头像',
     default: '',
+    trim: true,
   })
   avatar: string;
 

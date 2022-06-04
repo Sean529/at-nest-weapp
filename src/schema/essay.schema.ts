@@ -17,6 +17,7 @@ export class UserEssay extends Document {
   @Prop({
     required: true,
     description: '文字内容',
+    trim: true,
   })
   content: string;
 
