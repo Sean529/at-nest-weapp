@@ -1,6 +1,6 @@
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 import { UserDocument } from '../schema/user.schema';
 import { CacheService } from '../cache/cache.service';
@@ -49,11 +49,7 @@ export class UserService {
 
     const userDB = await this.userInfoModel.findOne({ userId });
     if (!userDB) {
-      return {
-        code: 400,
-        msg: '用户不存在',
-        data: null,
-      };
+      throw new HttpException('用户不存在', HttpStatus.NOT_FOUND);
     }
 
     return await this.saveUserInfoToDB(updateUserInfo);
@@ -89,11 +85,7 @@ export class UserService {
     // 从数据库中获取用户信息
     const userDB = await this.userInfoModel.findOne({ userId });
     if (!userDB) {
-      return {
-        code: 400,
-        msg: '用户不存在',
-        data: null,
-      };
+      throw new HttpException('用户不存在', HttpStatus.NOT_FOUND);
     }
 
     // 更新 redis 用户信息

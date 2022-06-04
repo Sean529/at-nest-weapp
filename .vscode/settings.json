@@ -1,5 +1,12 @@
 {
-  "cSpell.words": ["ilovewall", "nestjs", "Wechat"],
+  "cSpell.words": [
+    "errcode",
+    "errmsg",
+    "ilovewall",
+    "nestjs",
+    "weapp",
+    "Wechat"
+  ],
   "[typescript]": {
     "editor.defaultFormatter": "SimonSiefke.prettier-vscode"
   }

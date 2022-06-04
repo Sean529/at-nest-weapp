@@ -1,5 +1,5 @@
 import { Model } from 'mongoose';
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { JwtService } from '@nestjs/jwt';
 import { HttpService } from 'nestjs-http-promise';
@@ -19,16 +19,13 @@ export class AuthService {
   ) {}
 
   // 登录
-  login = async (code: string): Promise<any> => {
-    const { openId, sessionKey, errCode, errMsg } = await this.loginWithWechat(
-      code,
+  login = async (weappCode: string): Promise<any> => {
+    const { openId, sessionKey, code, msg } = await this.loginWithWechat(
+      weappCode,
     );
 
-    if (errCode !== 200) {
-      return {
-        errCode,
-        errMsg,
-      };
+    if (code !== 200) {
+      throw new HttpException(msg, code);
     }
 
     // 使用 openId 去数据库查用户信息
@@ -42,15 +39,6 @@ export class AuthService {
 
     // 生成 token
     const token = await this.generateToken({ userId, openId });
-
-    // 通过小程序的 code 获取微信服务的 session_key 时出错，则将错误信息抛给前端
-    if (errCode !== 200) {
-      return {
-        code: errCode,
-        msg: errMsg,
-        data: null,
-      };
-    }
 
     // 缓存 session_key 到 Redis
     await this.cacheService.set(`sessionKey_${userId}`, sessionKey, TWO_DAYS);
@@ -78,15 +66,15 @@ export class AuthService {
     const { data } = res;
     if (data?.errcode) {
       return {
-        errCode: data.errcode,
-        errMsg: data.errmsg,
+        code: data.errcode,
+        msg: data.errmsg,
       };
     }
     return {
       openId: data.openid,
       sessionKey: data.session_key,
-      errCode: 200,
-      errMsg: '',
+      code: 200,
+      msg: '',
     };
   };
 
