@@ -5,26 +5,52 @@ import { Document } from 'mongoose';
 
 @Schema()
 export class User extends Document {
-  @Prop()
+  @Prop({
+    required: true,
+    description: '用户ID',
+  })
   userId: string;
 
-  @Prop()
+  @Prop({
+    required: true,
+    description: '微信openId',
+  })
   openId: string;
 
-  @Prop()
+  @Prop({
+    description: '昵称',
+    default: '',
+  })
   nickname: string;
 
-  @Prop()
+  @Prop({
+    description: '头像',
+    default: '',
+  })
   avatar: string;
 
-  @Prop()
+  @Prop({
+    description: '性别',
+    default: 0,
+  })
   gender: number; // 0 1 2
 
-  @Prop()
+  @Prop({
+    description: '创建时间',
+    default: Date.now(),
+  })
   createTime: number;
 
-  @Prop()
+  @Prop({
+    description: '更新时间',
+    default: Date.now(),
+  })
   updateTime: number;
 }
 export const UserSchema = SchemaFactory.createForClass(User);
 export type UserDocument = User & Document;
+
+export const UserConfig = {
+  collection: 'user',
+  name: 'User',
+};

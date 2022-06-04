@@ -4,7 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 
 import { UserEssayDocument } from '../schema/essay.schema';
 import { generateId } from '../utils';
-import { IEssay } from './essay.type';
+import { IUserEssay } from './essay.type';
 import { IResponse } from 'src/type/response.type';
 
 @Injectable()
@@ -17,7 +17,7 @@ export class EssayService {
   create = async (body, user): Promise<IResponse> => {
     const { userId } = user;
     const { content } = body;
-    const essayInfo: IEssay = await this.generateEssay(userId, content);
+    const essayInfo: IUserEssay = await this.generateEssay(userId, content);
     return {
       code: 200,
       msg: '',
@@ -25,18 +25,16 @@ export class EssayService {
     };
   };
 
-  generateEssay = async (userId: string, content: string): Promise<IEssay> => {
+  generateEssay = async (
+    userId: string,
+    content: string,
+  ): Promise<IUserEssay> => {
     const essayId: string = await generateId();
-    const essayInfo: IEssay = {
+    const essayInfo: IUserEssay = {
       essayId,
       userId,
       content,
-      type: 0,
-      auditStatus: 0,
-      isDelete: false,
-      deleteTime: null,
-      createTime: new Date().getTime(),
-      updateTime: new Date().getTime(),
+      type: 0, // TODO: 默认0，如果传了image要改成1
     };
     const createEssay: UserEssayDocument = new this.EssayModel(essayInfo);
     return await createEssay.save();
@@ -68,7 +66,7 @@ export class EssayService {
     const hasNextPage: boolean = (page + 1) * pageSize < total;
 
     // 列表
-    const dataList: IEssay[] = await this.EssayModel.find()
+    const dataList: IUserEssay[] = await this.EssayModel.find()
       .skip(page * pageSize)
       .limit(pageSize);
 

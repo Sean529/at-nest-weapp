@@ -4,12 +4,12 @@ import { Injectable } from '@nestjs/common';
 
 import { UserDocument } from '../schema/user.schema';
 import { CacheService } from '../cache/cache.service';
-import { UserInfoDto } from './user.dto';
+import { UserDto } from './user.dto';
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectModel('UserInfo') private userInfoModel: Model<UserDocument>,
+    @InjectModel('User') private userInfoModel: Model<UserDocument>,
     private readonly cacheService: CacheService,
   ) {}
 
@@ -38,10 +38,7 @@ export class UserService {
   }
 
   // 更新用户信息
-  async updateUserInfo(
-    payloadUserInfo: UserInfoDto,
-    userId: string,
-  ): Promise<any> {
+  async updateUserInfo(payloadUserInfo: UserDto, userId: string): Promise<any> {
     // 通过 userId 从 Redis 中获取用户信息
     const userRedis = await this.cacheService.get(userId);
 
@@ -63,16 +60,16 @@ export class UserService {
   }
 
   // 组装更新用户信息
-  getUpdateUserInfo = (userId: string, payloadUserInfo: UserInfoDto) => {
+  getUpdateUserInfo = (userId: string, payloadUserInfo: UserDto) => {
     return {
       ...payloadUserInfo,
       userId,
-      updateTime: new Date().getTime(),
+      updateTime: Date.now(),
     };
   };
 
   // 返回用户信息
-  resultUserInfo(userInfo: UserInfoDto): any {
+  resultUserInfo(userInfo: UserDto): any {
     return {
       code: 200,
       msg: '',
@@ -81,7 +78,7 @@ export class UserService {
   }
 
   // 获取用户信息
-  async getUserInfo(userId: string): Promise<UserInfoDto & any> {
+  async getUserInfo(userId: string): Promise<UserDto & any> {
     // 从 Redis 中获取用户信息
     const userRedis = await this.cacheService.get(userId);
     if (userRedis) {

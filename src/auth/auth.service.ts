@@ -3,10 +3,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { JwtService } from '@nestjs/jwt';
 import { HttpService } from 'nestjs-http-promise';
-import { UserDocument } from '../schema/user.schema';
 
+import { UserDocument } from '../schema/user.schema';
 import { CacheService } from '../cache/cache.service';
-import { UserInfoDto } from '../user/user.dto';
+import { IUser } from '../user/user.type';
 import { generateId, TWO_DAYS, TWO_HOUR } from '../utils';
 
 @Injectable()
@@ -19,7 +19,7 @@ export class AuthService {
   ) {}
 
   // 登录
-  async login(code: string): Promise<any> {
+  login = async (code: string): Promise<any> => {
     const { openId, sessionKey, errCode, errMsg } = await this.loginWithWechat(
       code,
     );
@@ -36,7 +36,7 @@ export class AuthService {
 
     // 如果数据库中没有用户信息，则创建一条
     if (!userInfo) {
-      userInfo = await this.generateUserInfo({ openId });
+      userInfo = await this.generateUserInfo(openId);
     }
     const { userId } = userInfo;
 
@@ -66,10 +66,10 @@ export class AuthService {
         token,
       },
     };
-  }
+  };
 
   // 微信 code2session
-  async loginWithWechat(code: string): Promise<any> {
+  loginWithWechat = async (code: string): Promise<any> => {
     // 使用爱上刷题小程序进行测试
     const params = `appid=wxf5783118732fbb3b&secret=afd85101b32c44de9ccf0083c7096d62&js_code=${code}&grant_type=authorization_code`;
     const res = await this.httpService.get(
@@ -88,35 +88,30 @@ export class AuthService {
       errCode: 200,
       errMsg: '',
     };
-  }
+  };
 
   // 库中通过 openId 查用户信息
-  async getUserInfoByOpenId(openId: string): Promise<any> {
+  getUserInfoByOpenId = async (openId: string): Promise<UserDocument> => {
     return await this.userModel.findOne({ openId });
-  }
+  };
 
   // 生成 token
-  async generateToken(payload): Promise<any> {
+  generateToken = async (payload): Promise<string> => {
     const { userId } = payload;
     const token = this.jwtService.sign(payload);
     await this.cacheService.set(`token_${userId}`, token, TWO_HOUR);
     return token;
-  }
+  };
 
   // 创建用户
-  async generateUserInfo({ openId, nickname, gender, avatar }: UserInfoDto) {
+  generateUserInfo = async (openId): Promise<UserDocument> => {
     const userId = await generateId();
-    const userInfo: UserInfoDto = {
+    const userInfo: IUser = {
       userId,
       openId,
-      nickname: nickname || '',
-      gender: gender || 0,
-      avatar: avatar || '',
-      createTime: new Date().getTime(),
-      updateTime: new Date().getTime(),
     };
 
     const createUser = new this.userModel(userInfo);
     return await createUser.save();
-  }
+  };
 }

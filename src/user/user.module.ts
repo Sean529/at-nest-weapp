@@ -6,14 +6,18 @@ import { UserController } from './user.controller';
 import { UserService } from './user.service';
 import { CacheModule } from '../cache/cache.module';
 import { CacheService } from '../cache/cache.service';
-import { UserSchema } from '../schema/user.schema';
+import { UserSchema, UserConfig } from '../schema/user.schema';
 
 @Module({
   imports: [
     HttpModule,
     CacheModule,
     MongooseModule.forFeature([
-      { collection: 'userInfo', name: 'UserInfo', schema: UserSchema },
+      {
+        collection: UserConfig.collection,
+        name: UserConfig.name,
+        schema: UserSchema,
+      },
     ]),
   ],
   controllers: [UserController],

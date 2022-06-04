@@ -4,7 +4,7 @@ import { HttpModule } from 'nestjs-http-promise';
 
 import { EssayController } from './essay.controller';
 import { EssayService } from './essay.service';
-import { EssaySchema } from '../schema/essay.schema';
+import { UserEssaySchema, UserEssayConfig } from '../schema/essay.schema';
 import { CacheModule } from '../cache/cache.module';
 import { CacheService } from '../cache/cache.service';
 
@@ -13,7 +13,11 @@ import { CacheService } from '../cache/cache.service';
     HttpModule,
     CacheModule,
     MongooseModule.forFeature([
-      { collection: 'user_essay', name: 'UserEssay', schema: EssaySchema },
+      {
+        collection: UserEssayConfig.collection,
+        name: UserEssayConfig.name,
+        schema: UserEssaySchema,
+      },
     ]),
   ],
   controllers: [EssayController],

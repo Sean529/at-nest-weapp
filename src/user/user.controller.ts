@@ -7,7 +7,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { UserInfoDto } from './user.dto';
+import { UserDto } from './user.dto';
 import { AuthGuard } from '@nestjs/passport';
 
 // 配置局部路由
@@ -23,7 +23,7 @@ export class UserController {
   // 更新用户信息
   @Post('updateUserInfo')
   @UseGuards(AuthGuard('jwt'))
-  async updateUserInfo(@Body() body: UserInfoDto, @Request() request) {
+  async updateUserInfo(@Body() body: UserDto, @Request() request) {
     return this.userService.updateUserInfo(body, request.user.userId);
   }
 

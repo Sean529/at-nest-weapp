@@ -3,14 +3,14 @@ export enum EssayType {
   image, // 包含文字、图片
 }
 
-export interface IEssay {
+export interface IUserEssay {
   essayId: string;
   userId: string;
   content: string;
   type: EssayType;
-  auditStatus: number; // 待审核
-  isDelete: boolean;
-  deleteTime: number | null;
-  createTime: number;
-  updateTime: number;
+  auditStatus?: number; // 待审核
+  isDelete?: boolean;
+  deleteTime?: number | null;
+  createTime?: number;
+  updateTime?: number;
 }
