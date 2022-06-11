@@ -10,7 +10,7 @@ export class UserEssay extends Document {
 
   @Prop({
     required: true,
-    description: '发表人ID',
+    description: '发布者ID',
   })
   userId: string; // 发表人
 
@@ -23,19 +23,19 @@ export class UserEssay extends Document {
 
   @Prop({
     required: true,
-    description: '区分内容中是否包含图片',
-    default: 0,
+    description: '动态类型,1:纯文本，2:图文',
+    default: 1,
   })
-  type: number; // 0 仅文字，1图文
+  type: number;
 
   @Prop({
-    description: '审核状态',
+    description: '审核状态,0:待审核,1:通过,2:拒绝',
     default: 0,
   })
-  auditStatus: number; // 审核状态 0 待审核 1 审核通过 2 审核不通过
+  auditStatus: number;
 
   @Prop({
-    description: '是否被删除',
+    description: '是否已删除',
     default: false,
   })
   isDelete: boolean;
@@ -44,7 +44,7 @@ export class UserEssay extends Document {
     description: '删除时间',
     default: null,
   })
-  deleteTime: number; // 删除时间
+  deleteTime: number;
 
   @Prop({
     description: '创建时间',
