@@ -38,7 +38,7 @@ export class UserEssay extends Document {
     description: '是否已删除',
     default: false,
   })
-  isDelete: boolean;
+  isDeleted: boolean;
 
   @Prop({
     description: '删除时间',

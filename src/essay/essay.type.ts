@@ -9,7 +9,7 @@ export interface IUserEssay {
   content: string;
   type: EssayType;
   auditStatus?: number; // 待审核
-  isDelete?: boolean;
+  isDeleted?: boolean;
   deleteTime?: number | null;
   createTime?: number;
   updateTime?: number;
