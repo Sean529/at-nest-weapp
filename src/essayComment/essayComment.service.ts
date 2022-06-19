@@ -3,6 +3,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { generateId } from 'src/utils';
 import { EssayCommentDocument } from './essayComment.schema';
+import { IResponse } from '../type/response.type';
+import { IEssayComment } from './essayComment.type';
 
 @Injectable()
 export class EssayCommentService {
@@ -11,10 +13,14 @@ export class EssayCommentService {
     private CommentModel: Model<EssayCommentDocument>,
   ) {}
 
-  create = async (body, user) => {
+  create = async (body, user): Promise<IResponse> => {
     const { userId } = user;
     const { content, essayId } = body;
-    const commentInfo = await this.generateComment(userId, essayId, content);
+    const commentInfo: IEssayComment = await this.generateComment(
+      userId,
+      essayId,
+      content,
+    );
     return {
       code: 200,
       msg: '',
@@ -22,15 +28,21 @@ export class EssayCommentService {
     };
   };
 
-  generateComment = async (userId, essayId, content) => {
-    const commentId = await generateId();
-    const commentInfo = {
+  generateComment = async (
+    userId,
+    essayId,
+    content,
+  ): Promise<IEssayComment> => {
+    const commentId: string = await generateId();
+    const commentInfo: Partial<IEssayComment> = {
       commentId,
       userId,
       essayId,
       content,
     };
-    const createComment = new this.CommentModel(commentInfo);
+    const createComment: EssayCommentDocument = new this.CommentModel(
+      commentInfo,
+    );
     return await createComment.save();
   };
 }
