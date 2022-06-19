@@ -7,7 +7,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { EssayModule } from './essay/essay.module';
-import { EssayCommentModule } from './essayComment/essayComment.module';
+import { EssayCommentModule } from './comment/essayComment.module';
 
 @Module({
   imports: [
