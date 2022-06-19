@@ -4,9 +4,9 @@ import { MongooseModule } from '@nestjs/mongoose';
 
 import { CacheModule } from '../cache/cache.module';
 import { CacheService } from '../cache/cache.service';
-import { EssayCommentController } from './essayComment.controller';
-import { EssayCommentService } from './essayComment.service';
-import { EssayCommentConfig, EssayCommentSchema } from './essayComment.schema';
+import { EssayCommentController } from './comment.controller';
+import { EssayCommentService } from './comment.service';
+import { EssayCommentConfig, EssayCommentSchema } from './comment.schema';
 
 @Module({
   imports: [

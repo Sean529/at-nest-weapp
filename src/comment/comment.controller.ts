@@ -8,8 +8,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { EssayCommentDto, listDto } from './essayComment.dto';
-import { EssayCommentService } from './essayComment.service';
+import { EssayCommentDto, listDto } from './comment.dto';
+import { EssayCommentService } from './comment.service';
 
 @Controller('comment')
 export class EssayCommentController {

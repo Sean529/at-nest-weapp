@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { generateId } from 'src/utils';
-import { EssayCommentDocument } from './essayComment.schema';
+import { EssayCommentDocument } from './comment.schema';
 import { IResponse } from '../type/response.type';
-import { IEssayComment } from './essayComment.type';
+import { IEssayComment } from './comment.type';
 
 @Injectable()
 export class EssayCommentService {
