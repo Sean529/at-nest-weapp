@@ -13,4 +13,5 @@ export class EssayCommentDto {
 export class listDto {
   page?: number;
   pageSize?: number;
+  essayId: string;
 }

@@ -10,7 +10,7 @@ import { IEssayComment } from './essayComment.type';
 export class EssayCommentService {
   constructor(
     @InjectModel('EssayComment')
-    private CommentModel: Model<EssayCommentDocument>,
+    private EssayCommentModel: Model<EssayCommentDocument>,
   ) {}
 
   create = async (body, user): Promise<IResponse> => {
@@ -40,9 +40,54 @@ export class EssayCommentService {
       essayId,
       content,
     };
-    const createComment: EssayCommentDocument = new this.CommentModel(
+    const createComment: EssayCommentDocument = new this.EssayCommentModel(
       commentInfo,
     );
     return await createComment.save();
+  };
+
+  // 获取文章评论列表
+  getList = async (page = 1, pageSize = 10, essayId): Promise<IResponse> => {
+    // string 转 number
+    page = Number(page) - 1; //从数据库从 0 开始计数
+    pageSize = Number(pageSize);
+
+    // 总条数
+    const total: number = await this.EssayCommentModel.find({
+      essayId,
+    }).count();
+
+    // 表中无数据
+    if (!total) {
+      return {
+        code: 200,
+        msg: '',
+        data: {
+          list: [],
+          hasNextPage: false,
+          total: 0,
+        },
+      };
+    }
+
+    // 是否有下一页
+    const hasNextPage: boolean = (page + 1) * pageSize < total;
+
+    // 列表
+    const dataList: IEssayComment[] = await this.EssayCommentModel.find({
+      essayId,
+    })
+      .skip(page * pageSize)
+      .limit(pageSize);
+
+    return {
+      code: 200,
+      msg: '',
+      data: {
+        list: dataList,
+        hasNextPage,
+        total,
+      },
+    };
   };
 }
