@@ -67,6 +67,7 @@ export class EssayService {
 
     // 列表
     const dataList: IUserEssay[] = await this.EssayModel.find()
+      .sort({ createTime: -1 }) // 时间倒叙排列
       .skip(page * pageSize)
       .limit(pageSize);
 

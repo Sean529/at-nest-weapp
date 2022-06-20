@@ -77,6 +77,7 @@ export class EssayCommentService {
     const dataList: IEssayComment[] = await this.EssayCommentModel.find({
       essayId,
     })
+      .sort({ createTime: -1 }) // 时间倒叙排列
       .skip(page * pageSize)
       .limit(pageSize);
 
