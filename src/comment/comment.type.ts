@@ -6,6 +6,6 @@ export interface IEssayComment {
   likes: number; //点赞数量
   replyNum: number; // 回复数量
   isDeleted: boolean; // 是否已删除
-  createTime: number; // 删除时间
-  deleteTime: number | null; // 评论时间
+  createTime: number; // 评论时间
+  deleteTime: number | null; // 删除时间
 }

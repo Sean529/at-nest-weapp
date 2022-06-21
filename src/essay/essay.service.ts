@@ -5,12 +5,13 @@ import { InjectModel } from '@nestjs/mongoose';
 import { UserEssayDocument } from '../schema/essay.schema';
 import { generateId } from '../utils';
 import { IUserEssay } from './essay.type';
-import { IResponse } from 'src/type/response.type';
+import { IResponse } from '../type/response.type';
 
 @Injectable()
 export class EssayService {
   constructor(
-    @InjectModel('UserEssay') private EssayModel: Model<UserEssayDocument>,
+    @InjectModel('UserEssay')
+    private EssayModel: Model<UserEssayDocument>,
   ) {}
 
   // 创建文章

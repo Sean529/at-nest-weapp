@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { generateId } from 'src/utils';
+
+import { generateId } from '../utils';
 import { EssayCommentDocument } from './comment.schema';
 import { IResponse } from '../type/response.type';
 import { IEssayComment } from './comment.type';
@@ -29,9 +30,9 @@ export class EssayCommentService {
   };
 
   generateComment = async (
-    userId,
-    essayId,
-    content,
+    userId: string,
+    essayId: string,
+    content: string,
   ): Promise<IEssayComment> => {
     const commentId: string = await generateId();
     const commentInfo: Partial<IEssayComment> = {
