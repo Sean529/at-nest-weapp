@@ -1,7 +1,15 @@
-import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Query,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
-import { CommentReplyDto } from './commentReply.dto';
+import { CommentReplyDto, listDto } from './commentReply.dto';
 import { EssayCommentReplyService } from './commentReply.service';
 
 @Controller('comment/reply')
@@ -13,5 +21,13 @@ export class CommentReplyController {
   @UseGuards(AuthGuard('jwt'))
   async create(@Body() body: CommentReplyDto, @Request() request) {
     return this.essayCommentService.create(body, request.user);
+  }
+
+  // 获取文章评论列表
+  @Get('list')
+  @UseGuards(AuthGuard('jwt'))
+  async getList(@Query() query: listDto) {
+    const { page, pageSize, commentId } = query;
+    return this.essayCommentService.getList(page, pageSize, commentId);
   }
 }
