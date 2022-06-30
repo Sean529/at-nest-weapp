@@ -21,7 +21,6 @@ export class CommentReply extends Document {
   userId: string;
 
   @Prop({
-    required: true,
     description: '被评论动态ID',
   })
   essayId: string;
