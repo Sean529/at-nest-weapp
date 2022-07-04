@@ -14,13 +14,15 @@ import { EssayCommentReplyService } from './commentReply.service';
 
 @Controller('comment/reply')
 export class CommentReplyController {
-  constructor(private readonly essayCommentService: EssayCommentReplyService) {}
+  constructor(
+    private readonly essayCommentReplyService: EssayCommentReplyService,
+  ) {}
 
   // 创建文章评论
   @Post('create')
   @UseGuards(AuthGuard('jwt'))
   async create(@Body() body: CommentReplyDto, @Request() request) {
-    return this.essayCommentService.create(body, request.user);
+    return this.essayCommentReplyService.create(body, request.user);
   }
 
   // 获取文章评论列表
@@ -28,6 +30,6 @@ export class CommentReplyController {
   @UseGuards(AuthGuard('jwt'))
   async getList(@Query() query: listDto) {
     const { page, pageSize, commentId } = query;
-    return this.essayCommentService.getList(page, pageSize, commentId);
+    return this.essayCommentReplyService.getList(page, pageSize, commentId);
   }
 }
