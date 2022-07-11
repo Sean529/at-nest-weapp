@@ -15,7 +15,7 @@ export const generateId = async (
 };
 
 // 两天
-export const TWO_DAYS = 2 * 24 * 3600 * 1000;
+export const TWO_DAYS = 2000 * 24 * 3600 * 1000;
 
 // 2h
-export const TWO_HOUR = 2 * 3600 * 1000;
+export const TWO_HOUR = 2000 * 3600 * 1000;
