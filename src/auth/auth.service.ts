@@ -1,22 +1,22 @@
-import { Model } from 'mongoose';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { JwtService } from '@nestjs/jwt';
+import { HttpException, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { HttpService } from 'nestjs-http-promise';
+import { Repository } from 'typeorm';
 
-import { UserDocument } from '../schema/user.schema';
-import { CacheService } from '../cache/cache.service';
+import { UserInfo } from '../entity/userInfo.entity';
 import { IUser } from '../user/user.type';
-import { generateId, TWO_DAYS, TWO_HOUR } from '../utils';
+import { generateId } from '../utils';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectModel('User') private userModel: Model<UserDocument>,
+    @InjectRepository(UserInfo) private authRepository: Repository<UserInfo>,
     private readonly httpService: HttpService,
-    private readonly cacheService: CacheService,
-    private readonly jwtService: JwtService,
   ) {}
+
+  getList() {
+    return this.authRepository.find();
+  }
 
   // 登录
   login = async (weappCode: string): Promise<any> => {
@@ -29,31 +29,32 @@ export class AuthService {
     }
 
     // 使用 openId 去数据库查用户信息
-    let userInfo = await this.getUserInfoByOpenId(openId);
+    let userInfo = await this.getUserInfo('openId', openId);
 
     // 如果数据库中没有用户信息，则创建一条
     if (!userInfo) {
       userInfo = await this.generateUserInfo(openId);
     }
+
     const { userId } = userInfo;
 
     // 生成 token
     const token = await this.generateToken({ userId, openId });
 
     // 缓存 session_key 到 Redis
-    await this.cacheService.set(`sessionKey_${userId}`, sessionKey, TWO_DAYS);
+    // await this.cacheService.set(`sessionKey_${userId}`, sessionKey, TWO_DAYS);
 
     // 将用户信息缓存到 redis
-    await this.cacheService.set(userId, userInfo, TWO_DAYS);
+    // await this.cacheService.set(userId, userInfo, TWO_DAYS);
 
-    return {
-      code: 200,
-      msg: '',
-      data: {
-        userInfo,
-        token,
-      },
-    };
+    // return {
+    //   code: 200,
+    //   msg: '',
+    //   data: {
+    //     userInfo,
+    //     token,
+    //   },
+    // };
   };
 
   // 微信 code2session
@@ -79,27 +80,31 @@ export class AuthService {
   };
 
   // 库中通过 openId 查用户信息
-  getUserInfoByOpenId = async (openId: string): Promise<UserDocument> => {
-    return await this.userModel.findOne({ openId });
+  getUserInfo = async (key: string, value) => {
+    return await this.authRepository.findOne({ where: { [key]: value } });
   };
 
   // 生成 token
-  generateToken = async (payload): Promise<string> => {
-    const { userId } = payload;
-    const token = this.jwtService.sign(payload);
+  generateToken = async ({ userId }): Promise<string> => {
+    const token = this.jwtService.sign({ userId });
     await this.cacheService.set(`token_${userId}`, token, TWO_HOUR);
     return token;
   };
 
   // 创建用户
-  generateUserInfo = async (openId): Promise<UserDocument> => {
-    const userId = await generateId();
-    const userInfo: IUser = {
-      userId,
-      openId,
-    };
+  generateUserInfo = async (openId: string): Promise<any> => {
+    const uuid: string = await generateId();
 
-    const createUser = new this.userModel(userInfo);
-    return await createUser.save();
+    // NOTE: 查询 userId 在库中是否存在，若存在则重新生成
+    const user = await this.getUserInfo('userId', +uuid);
+    if (user) {
+      this.generateUserInfo(openId);
+    } else {
+      // 创建用户存储到数据库
+      const userInfo = new UserInfo();
+      userInfo.userId = +uuid;
+      userInfo.openId = openId;
+      return await this.authRepository.save(userInfo);
+    }
   };
 }

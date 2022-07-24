@@ -1,24 +1,30 @@
 import { Module } from '@nestjs/common';
 import { Log4jsModule } from '@nestx-log4js/core';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { MongooseModule } from '@nestjs/mongoose';
-import { UserModule } from './user/user.module';
+// import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
-import { EssayModule } from './essay/essay.module';
-import { EssayCommentModule } from './comment/comment.module';
-import { CommentReplyModule } from './commentReply/commentReply.module';
+// import { EssayModule } from './essay/essay.module';
+// import { EssayCommentModule } from './comment/comment.module';
+// import { CommentReplyModule } from './commentReply/commentReply.module';
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://127.0.0.1:27017/ilovewall'),
+    TypeOrmModule.forRoot({
+      port: 3306,
+      type: 'mysql',
+      username: 'root',
+      host: 'localhost',
+      charset: 'utf8mb4',
+      password: 'qwer1234',
+      database: 'test',
+      synchronize: true,
+      autoLoadEntities: true,
+    }),
     Log4jsModule.forRoot(),
-    UserModule,
     AuthModule,
-    EssayModule,
-    EssayCommentModule,
-    CommentReplyModule,
   ],
   controllers: [AppController],
   providers: [AppService],

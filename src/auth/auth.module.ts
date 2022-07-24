@@ -1,33 +1,14 @@
 import { Module } from '@nestjs/common';
-import { PassportModule } from '@nestjs/passport';
-import { JwtModule } from '@nestjs/jwt';
-import { MongooseModule } from '@nestjs/mongoose';
-import { HttpModule } from 'nestjs-http-promise';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { JwtStrategy } from './jwt.strategy';
-import { JWT_CONSTANTS } from './constants';
-import { CacheModule } from '../cache/cache.module';
-import { CacheService } from '../cache/cache.service';
-import { UserSchema } from '../schema/user.schema';
+import { HttpModule } from 'nestjs-http-promise';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-
-const jwtModule = JwtModule.registerAsync({
-  useFactory: () => {
-    return {
-      secret: JWT_CONSTANTS.secret,
-      signOptions: { expiresIn: JWT_CONSTANTS.expiresIn },
-    };
-  },
-});
-
-const mongooseModule = MongooseModule.forFeature([
-  { collection: 'user', name: 'User', schema: UserSchema },
-]);
+import { UserInfo } from '../entity/userInfo.entity';
 
 @Module({
-  imports: [HttpModule, PassportModule, jwtModule, mongooseModule, CacheModule],
+  imports: [TypeOrmModule.forFeature([UserInfo]), HttpModule],
   controllers: [AuthController],
-  providers: [JwtStrategy, CacheService, AuthService],
+  providers: [AuthService],
 })
 export class AuthModule {}
