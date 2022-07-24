@@ -1,17 +1,21 @@
 import { HttpException, Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { HttpService } from 'nestjs-http-promise';
+import { CacheService } from '../cache/cache.service';
 import { Repository } from 'typeorm';
 
 import { UserInfo } from '../entity/userInfo.entity';
 import { IUser } from '../user/user.type';
-import { generateId } from '../utils';
+import { generateId, TWO_DAYS, TWO_HOUR } from '../utils';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(UserInfo) private authRepository: Repository<UserInfo>,
     private readonly httpService: HttpService,
+    private readonly jwtService: JwtService,
+    private readonly cacheService: CacheService,
   ) {}
 
   getList() {
@@ -42,19 +46,19 @@ export class AuthService {
     const token = await this.generateToken({ userId, openId });
 
     // 缓存 session_key 到 Redis
-    // await this.cacheService.set(`sessionKey_${userId}`, sessionKey, TWO_DAYS);
+    await this.cacheService.set(`sessionKey_${userId}`, sessionKey, TWO_DAYS);
 
     // 将用户信息缓存到 redis
-    // await this.cacheService.set(userId, userInfo, TWO_DAYS);
+    await this.cacheService.set(userId, userInfo, TWO_DAYS);
 
-    // return {
-    //   code: 200,
-    //   msg: '',
-    //   data: {
-    //     userInfo,
-    //     token,
-    //   },
-    // };
+    return {
+      code: 200,
+      msg: '成功',
+      data: {
+        userInfo,
+        token,
+      },
+    };
   };
 
   // 微信 code2session
@@ -85,8 +89,8 @@ export class AuthService {
   };
 
   // 生成 token
-  generateToken = async ({ userId }): Promise<string> => {
-    const token = this.jwtService.sign({ userId });
+  generateToken = async ({ userId, openId }): Promise<string> => {
+    const token = this.jwtService.sign({ userId, openId });
     await this.cacheService.set(`token_${userId}`, token, TWO_HOUR);
     return token;
   };

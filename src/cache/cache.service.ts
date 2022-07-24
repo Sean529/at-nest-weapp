@@ -14,7 +14,7 @@ export class CacheService {
   }
 
   // 设置值，失效时间单位是毫秒
-  async set(key: string, value: any, time?: number) {
+  async set(key: string | number, value: any, time?: number) {
     value = JSON.stringify(value);
     if (!this.client) {
       await this.getClient();
