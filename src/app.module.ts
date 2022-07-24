@@ -4,7 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-// import { UserModule } from './user/user.module';
+import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 // import { EssayModule } from './essay/essay.module';
 // import { EssayCommentModule } from './comment/comment.module';
@@ -25,6 +25,7 @@ import { AuthModule } from './auth/auth.module';
     }),
     Log4jsModule.forRoot(),
     AuthModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],

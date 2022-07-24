@@ -6,20 +6,19 @@ import { CacheService } from '../cache/cache.service';
 import { Repository } from 'typeorm';
 
 import { UserInfo } from '../entity/userInfo.entity';
-import { IUser } from '../user/user.type';
 import { generateId, TWO_DAYS, TWO_HOUR } from '../utils';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectRepository(UserInfo) private authRepository: Repository<UserInfo>,
+    @InjectRepository(UserInfo) private userRepository: Repository<UserInfo>,
     private readonly httpService: HttpService,
     private readonly jwtService: JwtService,
     private readonly cacheService: CacheService,
   ) {}
 
   getList() {
-    return this.authRepository.find();
+    return this.userRepository.find();
   }
 
   // 登录
@@ -85,7 +84,7 @@ export class AuthService {
 
   // 库中通过 openId 查用户信息
   getUserInfo = async (key: string, value) => {
-    return await this.authRepository.findOne({ where: { [key]: value } });
+    return await this.userRepository.findOne({ where: { [key]: value } });
   };
 
   // 生成 token
@@ -108,7 +107,7 @@ export class AuthService {
       const userInfo = new UserInfo();
       userInfo.userId = +uuid;
       userInfo.openId = openId;
-      return await this.authRepository.save(userInfo);
+      return await this.userRepository.save(userInfo);
     }
   };
 }

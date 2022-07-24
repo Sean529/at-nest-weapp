@@ -6,9 +6,10 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+
 import { UserService } from './user.service';
 import { UserDto } from './user.dto';
-import { AuthGuard } from '@nestjs/passport';
 
 // 配置局部路由
 @Controller('user')

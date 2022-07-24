@@ -1,15 +1,16 @@
-import { Model } from 'mongoose';
-import { InjectModel } from '@nestjs/mongoose';
+import { Repository } from 'typeorm';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
-import { UserDocument } from '../schema/user.schema';
+// import { UserDocument } from '../schema/user.schema';
 import { CacheService } from '../cache/cache.service';
 import { UserDto } from './user.dto';
+import { UserInfo } from '../entity/userInfo.entity';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectModel('User') private userInfoModel: Model<UserDocument>,
+    @InjectRepository(UserInfo) private userRepository: Repository<UserInfo>,
     private readonly cacheService: CacheService,
   ) {}
 
@@ -23,22 +24,28 @@ export class UserService {
   async saveUserInfoToDB(updateUserInfo): Promise<any> {
     const { userId } = updateUserInfo;
 
+    const userInfoDB = await this.userRepository.findOne({ where: { userId } });
+
+    const newUserInfo = {
+      ...userInfoDB,
+      ...updateUserInfo,
+    };
+
     // 更新数据库中用户信息
-    await this.userInfoModel.updateOne({ userId }, updateUserInfo);
-    const userInfo = await this.userInfoModel.findOne({ userId });
+    await this.userRepository.save(newUserInfo);
 
     // 更新 redis 用户信息
-    await this.cacheService.set(userId, userInfo);
+    await this.cacheService.set(userId, newUserInfo);
 
     return {
       code: 200,
       msg: '',
-      data: userInfo,
+      data: newUserInfo,
     };
   }
 
   // 更新用户信息
-  async updateUserInfo(payloadUserInfo: UserDto, userId: string): Promise<any> {
+  async updateUserInfo(payloadUserInfo: UserDto, userId: number): Promise<any> {
     // 通过 userId 从 Redis 中获取用户信息
     const userRedis = await this.cacheService.get(userId);
 
@@ -47,7 +54,7 @@ export class UserService {
       return await this.saveUserInfoToDB(updateUserInfo);
     }
 
-    const userDB = await this.userInfoModel.findOne({ userId });
+    const userDB = await this.userRepository.findOne({ where: { userId } });
     if (!userDB) {
       throw new HttpException('用户不存在', HttpStatus.NOT_FOUND);
     }
@@ -55,12 +62,11 @@ export class UserService {
     return await this.saveUserInfoToDB(updateUserInfo);
   }
 
-  // 组装更新用户信息
-  getUpdateUserInfo = (userId: string, payloadUserInfo: UserDto) => {
+  // 组装新的用户信息
+  getUpdateUserInfo = (userId: number, payloadUserInfo: UserDto) => {
     return {
       ...payloadUserInfo,
       userId,
-      updateTime: Date.now(),
     };
   };
 
@@ -74,7 +80,7 @@ export class UserService {
   }
 
   // 获取用户信息
-  async getUserInfo(userId: string): Promise<UserDto & any> {
+  async getUserInfo(userId: number): Promise<UserDto & any> {
     // 从 Redis 中获取用户信息
     const userRedis = await this.cacheService.get(userId);
     if (userRedis) {
@@ -83,7 +89,9 @@ export class UserService {
     }
 
     // 从数据库中获取用户信息
-    const userDB = await this.userInfoModel.findOne({ userId });
+    const userDB = await this.userRepository.findOne({
+      where: { userId: userId },
+    });
     if (!userDB) {
       throw new HttpException('用户不存在', HttpStatus.NOT_FOUND);
     }

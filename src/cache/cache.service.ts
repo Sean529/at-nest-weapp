@@ -27,7 +27,7 @@ export class CacheService {
   }
 
   // 获取值
-  async get(key: string) {
+  async get(key: string | number) {
     if (!this.client) {
       await this.getClient();
     }
