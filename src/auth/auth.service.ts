@@ -82,7 +82,6 @@ export class AuthService {
     };
   };
 
-  // 库中通过 openId 查用户信息
   getUserInfo = async (key: string, value) => {
     return await this.userRepository.findOne({ where: { [key]: value } });
   };
@@ -96,7 +95,7 @@ export class AuthService {
 
   // 创建用户
   generateUserInfo = async (openId: string): Promise<any> => {
-    const uuid: string = await generateId();
+    const uuid: number = await generateId();
 
     // NOTE: 查询 userId 在库中是否存在，若存在则重新生成
     const user = await this.getUserInfo('userId', +uuid);
@@ -105,7 +104,7 @@ export class AuthService {
     } else {
       // 创建用户存储到数据库
       const userInfo = new UserInfo();
-      userInfo.userId = +uuid;
+      userInfo.userId = uuid;
       userInfo.openId = openId;
       return await this.userRepository.save(userInfo);
     }
