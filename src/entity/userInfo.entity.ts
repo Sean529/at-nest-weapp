@@ -16,6 +16,9 @@ export class UserInfo extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
+  /**
+   * 用户编号
+   */
   @Column({
     type: 'bigint', // 大数字
     name: 'user_id',
@@ -25,6 +28,9 @@ export class UserInfo extends BaseEntity {
   })
   userId: number;
 
+  /**
+   * 微信openId
+   */
   @Column({
     type: 'varchar',
     unique: true,
@@ -34,9 +40,15 @@ export class UserInfo extends BaseEntity {
   })
   openId: string;
 
+  /**
+   * 昵称
+   */
   @Column({ comment: '昵称', nullable: true, length: 64 })
   nickname: string;
 
+  /**
+   * 头像
+   */
   @Column({
     comment: '头像',
     nullable: true,
@@ -44,6 +56,9 @@ export class UserInfo extends BaseEntity {
   })
   avatar: string;
 
+  /**
+   * 性别,0:未知;1:男;2:女
+   */
   @Column({
     type: 'enum',
     enum: Gender,

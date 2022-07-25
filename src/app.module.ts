@@ -6,7 +6,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
-// import { EssayModule } from './essay/essay.module';
+import { EssayModule } from './essay/essay.module';
 // import { EssayCommentModule } from './comment/comment.module';
 // import { CommentReplyModule } from './commentReply/commentReply.module';
 
@@ -26,6 +26,7 @@ import { AuthModule } from './auth/auth.module';
     Log4jsModule.forRoot(),
     AuthModule,
     UserModule,
+    EssayModule,
   ],
   controllers: [AppController],
   providers: [AppService],
