@@ -8,10 +8,11 @@ import { customAlphabet } from 'nanoid/async';
  */
 export const generateId = async (
   rule = '1234567890',
-  number = 10,
-): Promise<string> => {
+  number = 16,
+): Promise<number> => {
   const nanoid = customAlphabet(rule, number);
-  return await nanoid();
+  const id = await nanoid();
+  return +id;
 };
 
 // 两天

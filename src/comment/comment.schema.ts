@@ -6,7 +6,7 @@ export class EssayComment extends Document {
   @Prop({
     required: true,
   })
-  commentId: string;
+  commentId: number;
 
   @Prop({
     required: true,

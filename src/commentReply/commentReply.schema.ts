@@ -12,7 +12,7 @@ export class CommentReply extends Document {
     required: true,
     description: '动态评论ID',
   })
-  commentId: string;
+  commentId: number;
 
   @Prop({
     required: true,

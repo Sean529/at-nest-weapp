@@ -34,7 +34,7 @@ export class EssayCommentService {
     essayId: string,
     content: string,
   ): Promise<IEssayComment> => {
-    const commentId: string = await generateId();
+    const commentId: number = await generateId();
     const commentInfo: Partial<IEssayComment> = {
       commentId,
       userId,

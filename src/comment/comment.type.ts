@@ -1,5 +1,5 @@
 export interface IEssayComment {
-  commentId: string; // 评论id
+  commentId: number; // 评论id
   userId: string; //评论人用户id
   essayId: string; // 被评论动态id
   content: string; // 评论文字内容

@@ -1,7 +1,7 @@
 export interface ICommentReply {
   replyId: string; // 回复id
   essayId: string; // 动态id
-  commentId: string; // 评论id
+  commentId: number; // 评论id
   userId: string; // 回复人用户id
   parentReplyId: string | null; // 父回复id。回复别人对评论的回复，别人的回复就是父回复
   parentReplyUserId: string | null; // 父回复的用户id
