@@ -1,16 +1,14 @@
+import { Base } from '../type/base.type';
+
 export enum EssayType {
-  text, // 仅文字
-  image, // 包含文字、图片
+  TEXT, // 仅文字
+  IMAGE, // 包含文字、图片
 }
 
-export interface IUserEssay {
-  essayId: string;
-  userId: string;
+export interface IUserEssay extends Base {
+  essayId: number;
   content: string;
   type: EssayType;
   auditStatus?: number; // 待审核
   isDeleted?: boolean;
-  deleteTime?: number | null;
-  createTime?: number;
-  updateTime?: number;
 }

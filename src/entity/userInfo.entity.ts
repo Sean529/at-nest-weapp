@@ -1,6 +1,7 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
 import { BaseEntity } from './BaseEntity';
+import { UserEssay } from './userEssay.entity';
 
 export enum Gender {
   UNKNOWN,
@@ -17,7 +18,7 @@ export class UserInfo extends BaseEntity {
   id: number;
 
   /**
-   * 用户编号
+   * 用户id
    */
   @Column({
     type: 'bigint', // 大数字
@@ -27,6 +28,12 @@ export class UserInfo extends BaseEntity {
     comment: '用户编号',
   })
   userId: number;
+
+  /**
+   * 一个用户对应多篇文章
+   */
+  @OneToMany(() => UserEssay, (essay) => essay.essayId)
+  essay: UserEssay;
 
   /**
    * 微信openId
@@ -50,6 +57,7 @@ export class UserInfo extends BaseEntity {
    * 头像
    */
   @Column({
+    type: 'varchar',
     comment: '头像',
     nullable: true,
     length: 256,
