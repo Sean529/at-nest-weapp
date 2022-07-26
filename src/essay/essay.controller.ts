@@ -27,7 +27,7 @@ export class EssayController {
   @Get('list')
   @UseGuards(AuthGuard('jwt'))
   async getList(@Query() query: listDto) {
-    // const { page, pageSize } = query;
-    // return this.essayService.list(page, pageSize);
+    const { page, pageSize } = query;
+    return this.essayService.list(page, pageSize);
   }
 }

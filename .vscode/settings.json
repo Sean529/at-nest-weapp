@@ -8,6 +8,6 @@
     "Wechat"
   ],
   "[typescript]": {
-    "editor.defaultFormatter": "SimonSiefke.prettier-vscode"
+    "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
   }
 }

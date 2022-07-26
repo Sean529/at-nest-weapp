@@ -56,44 +56,42 @@ export class EssayService {
   };
 
   // 文章列表
-  // list = async (page = 1, pageSize = 10): Promise<IResponse> => {
-  //   // string 转 number
-  //   page = Number(page) - 1; // 数据库从 0 开始计数
-  //   pageSize == Number(pageSize);
+  list = async (page = 1, pageSize = 10) => {
+    // string 转 number
+    page = Number(page) - 1; // 数据库从 0 开始计数
+    pageSize == Number(pageSize);
 
-  //   // 总条数
-  //   const total: number = await this.EssayModel.find().count();
+    // 总条数
+    const [list, total] = await this.UserEssayRepository.createQueryBuilder()
+      .orderBy('created_at', 'DESC')
+      .take(pageSize) // 取n条
+      .skip(pageSize * page) // 跳过n条
+      .getManyAndCount();
 
-  //   // 表中无数据
-  //   if (!total) {
-  //     return {
-  //       code: 200,
-  //       msg: '',
-  //       data: {
-  //         list: [],
-  //         hasNextPage: false,
-  //         total: 0,
-  //       },
-  //     };
-  //   }
+    // 表中无数据
+    if (!total) {
+      return {
+        code: 200,
+        msg: '',
+        data: {
+          list: [],
+          hasNextPage: false,
+          total: 0,
+        },
+      };
+    }
 
-  //   // 是否有下一页
-  //   const hasNextPage: boolean = (page + 1) * pageSize < total;
+    // 是否有下一页
+    const hasNextPage: boolean = (page + 1) * pageSize < total;
 
-  //   // 列表
-  //   const dataList: IUserEssay[] = await this.EssayModel.find()
-  //     .sort({ createTime: -1 }) // 时间倒叙排列
-  //     .skip(page * pageSize)
-  //     .limit(pageSize);
-
-  //   return {
-  //     code: 200,
-  //     msg: '',
-  //     data: {
-  //       list: dataList,
-  //       hasNextPage,
-  //       total,
-  //     },
-  //   };
-  // };
+    return {
+      code: 200,
+      msg: '',
+      data: {
+        list: list,
+        hasNextPage,
+        total,
+      },
+    };
+  };
 }
