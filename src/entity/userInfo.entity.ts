@@ -29,11 +29,11 @@ export class UserInfo extends BaseEntity {
   })
   userId: number;
 
-  /**
-   * 一个用户对应多篇文章
-   */
-  @OneToMany(() => UserEssay, (essay) => essay.essayId)
-  essay: UserEssay;
+  // /**
+  //  * 一个用户对应多篇文章
+  //  */
+  // @OneToMany(() => UserEssay, (essay) => essay.essayId)
+  // essay: UserEssay;
 
   /**
    * 微信openId

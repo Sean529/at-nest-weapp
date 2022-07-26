@@ -62,8 +62,11 @@ export class EssayService {
     pageSize == Number(pageSize);
 
     // 总条数
-    const [list, total] = await this.UserEssayRepository.createQueryBuilder()
-      .orderBy('created_at', 'DESC')
+    const [list, total] = await this.UserEssayRepository.createQueryBuilder(
+      'essay',
+    )
+      .leftJoinAndSelect('essay.userInfo', 'user_id')
+      .orderBy('essay.createdAt', 'DESC')
       .take(pageSize) // 取n条
       .skip(pageSize * page) // 跳过n条
       .getManyAndCount();
