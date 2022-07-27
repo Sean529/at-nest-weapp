@@ -7,7 +7,7 @@ import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { EssayModule } from './essay/essay.module';
-// import { EssayCommentModule } from './comment/comment.module';
+import { EssayCommentModule } from './comment/comment.module';
 // import { CommentReplyModule } from './commentReply/commentReply.module';
 
 @Module({
@@ -27,6 +27,7 @@ import { EssayModule } from './essay/essay.module';
     AuthModule,
     UserModule,
     EssayModule,
+    EssayCommentModule,
   ],
   controllers: [AppController],
   providers: [AppService],
