@@ -13,7 +13,7 @@ import { UserInfo } from '../entity/userInfo.entity';
 export class EssayService {
   constructor(
     @InjectRepository(UserEssay)
-    private UserEssayRepository: Repository<UserEssay>,
+    private userEssayRepository: Repository<UserEssay>,
     @InjectRepository(UserInfo) private userRepository: Repository<UserInfo>,
   ) {}
 
@@ -30,7 +30,7 @@ export class EssayService {
   };
 
   getUserEssayInfo = async (key: string, value) => {
-    return await this.UserEssayRepository.findOne({ where: { [key]: value } });
+    return await this.userEssayRepository.findOne({ where: { [key]: value } });
   };
 
   generateEssay = async (
@@ -51,7 +51,7 @@ export class EssayService {
       essayInfo.userInfo = await this.userRepository.findOne({
         where: { userId },
       });
-      return await this.UserEssayRepository.save(essayInfo);
+      return await this.userEssayRepository.save(essayInfo);
     }
   };
 
@@ -62,9 +62,8 @@ export class EssayService {
     pageSize == Number(pageSize);
 
     // 总条数
-    const [list, total] = await this.UserEssayRepository.createQueryBuilder(
-      'essay',
-    )
+    const [list, total] = await this.userEssayRepository
+      .createQueryBuilder('essay')
       .leftJoinAndSelect('essay.userInfo', 'user_id')
       .orderBy('essay.createdAt', 'DESC')
       .take(pageSize) // 取n条

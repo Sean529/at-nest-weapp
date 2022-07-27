@@ -1,6 +1,6 @@
 export class EssayDto {
-  essayId?: string;
-  userId?: string; // 发表人
+  essayId?: number;
+  userId?: number; // 发表人
   content: string; // 文字内容
   type?: number; // 0 仅文字，1图文
   auditStatus?: number; // 审核状态 0 待审核 1 审核通过 2 审核不通过
