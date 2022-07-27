@@ -23,10 +23,10 @@ export class EssayCommentController {
   }
 
   // 获取文章评论列表
-  @Get('list')
-  @UseGuards(AuthGuard('jwt'))
-  async getList(@Query() query: listDto) {
-    const { page, pageSize, essayId } = query;
-    return this.essayCommentService.getList(page, pageSize, essayId);
-  }
+  // @Get('list')
+  // @UseGuards(AuthGuard('jwt'))
+  // async getList(@Query() query: listDto) {
+  //   const { page, pageSize, essayId } = query;
+  //   return this.essayCommentService.getList(page, pageSize, essayId);
+  // }
 }
