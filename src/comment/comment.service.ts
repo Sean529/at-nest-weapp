@@ -49,49 +49,61 @@ export class EssayCommentService {
     return await this.essayCommentRepository.save(essayCommentInfo);
   };
 
+  // 表中无数据
+  getNull = () => {
+    return {
+      code: 200,
+      msg: '',
+      data: {
+        list: [],
+        hasNextPage: false,
+        total: 0,
+      },
+    };
+  };
+
   // 获取文章评论列表
-  // getList = async (page = 1, pageSize = 10, essayId): Promise<IResponse> => {
-  //   // string 转 number
-  //   page = Number(page) - 1; //从数据库从 0 开始计数
-  //   pageSize = Number(pageSize);
+  getList = async (page = 1, pageSize = 10, essayId) => {
+    // string 转 number
+    page = Number(page) - 1; //从数据库从 0 开始计数
+    pageSize = Number(pageSize);
 
-  //   // 总条数
-  //   const total: number = await this.EssayCommentModel.find({
-  //     essayId,
-  //   }).count();
+    // 先查动态信息是否还存在
+    const essayInfo = await this.essayRepository.findOne({
+      where: { essayId },
+    });
 
-  //   // 表中无数据
-  //   if (!total) {
-  //     return {
-  //       code: 200,
-  //       msg: '',
-  //       data: {
-  //         list: [],
-  //         hasNextPage: false,
-  //         total: 0,
-  //       },
-  //     };
-  //   }
+    // 动态不存在，则返回空的评论列表
+    if (!essayInfo) {
+      return this.getNull();
+    }
 
-  //   // 是否有下一页
-  //   const hasNextPage: boolean = (page + 1) * pageSize < total;
+    const [list, total] = await this.essayCommentRepository
+      .createQueryBuilder('comment') // 表的别名
+      .leftJoinAndSelect('comment.essayInfo', 'essay_id') // essay_id 是entity中的 JoinColumn name
+      .leftJoinAndSelect('comment.userInfo', 'user_id')
+      .orderBy('comment.createdAt', 'DESC')
+      .where({ essayInfo }) // 通过动态信息查评论
+      .take(pageSize) // 取n条
+      .skip(pageSize * page) // 跳过n条
+      .getManyAndCount();
 
-  //   // 列表
-  //   const dataList: IEssayComment[] = await this.EssayCommentModel.find({
-  //     essayId,
-  //   })
-  //     .sort({ createTime: -1 }) // 时间倒叙排列
-  //     .skip(page * pageSize)
-  //     .limit(pageSize);
+    // 表中无数据
+    if (!total) {
+      return this.getNull();
+    }
 
-  //   return {
-  //     code: 200,
-  //     msg: '',
-  //     data: {
-  //       list: dataList,
-  //       hasNextPage,
-  //       total,
-  //     },
-  //   };
-  // };
+    // 是否有下一页
+    const hasNextPage: boolean = (page + 1) * pageSize < total;
+
+    return {
+      code: 200,
+      msg: '',
+      data: {
+        list,
+        hasNextPage,
+        total,
+      },
+    };
+  };
 }
