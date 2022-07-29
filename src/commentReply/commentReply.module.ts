@@ -1,24 +1,22 @@
 import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { HttpModule } from 'nestjs-http-promise';
 
 import { CacheModule } from '../cache/cache.module';
 import { CacheService } from '../cache/cache.service';
 import { CommentReplyController } from './commentReply.controller';
 import { EssayCommentReplyService } from './commentReply.service';
-import { CommentReplyConfig, CommentReplySchema } from './commentReply.schema';
+import { EssayComment } from '../entity/essayComment.entity';
+import { UserInfo } from '../entity/userInfo.entity';
+import { CommentReply } from '../entity/commentReply.entity';
 
 @Module({
   imports: [
     HttpModule,
     CacheModule,
-    MongooseModule.forFeature([
-      {
-        collection: CommentReplyConfig.collection,
-        name: CommentReplyConfig.name,
-        schema: CommentReplySchema,
-      },
-    ]),
+    TypeOrmModule.forFeature([CommentReply]),
+    TypeOrmModule.forFeature([EssayComment]),
+    TypeOrmModule.forFeature([UserInfo]),
   ],
   controllers: [CommentReplyController],
   providers: [EssayCommentReplyService, CacheService],

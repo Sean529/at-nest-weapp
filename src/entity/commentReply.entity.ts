@@ -8,13 +8,13 @@ import {
 
 import { BaseEntity } from './BaseEntity';
 import { UserInfo } from './userInfo.entity';
-import { UserEssay } from './userEssay.entity';
+import { EssayComment } from './essayComment.entity';
 
 /**
- * 动态评论表
+ * 评论回复表
  */
-@Entity({ name: 'essay_comment' })
-export class EssayComment extends BaseEntity {
+@Entity({ name: 'comment_reply' })
+export class CommentReply extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -23,26 +23,26 @@ export class EssayComment extends BaseEntity {
    */
   @Column({
     type: 'bigint', // 大数字
-    name: 'comment_id',
+    name: 'replay_id',
     unique: true, // 不重复
     unsigned: true, // unsigned
-    comment: '评论id',
+    comment: '评论回复id',
   })
-  commentId: number;
+  replyId: number;
 
   /**
-   * 多个评论对应一个文章
-   */
-  @ManyToOne(() => UserEssay, (essay) => essay.essayId)
-  @JoinColumn({ name: 'essay_id' })
-  essayInfo: UserEssay;
-
-  /**
-   * 多个评论对应一个用户
+   * 多个回复对应一个用户
    */
   @ManyToOne(() => UserInfo, (user) => user.userId)
   @JoinColumn({ name: 'user_id' })
   userInfo: UserInfo;
+
+  /**
+   * 多个回复对应一个评论
+   */
+  @ManyToOne(() => EssayComment, (comment) => comment.commentId)
+  @JoinColumn({ name: 'comment_id' })
+  commentInfo: EssayComment;
 
   /**
    * 文字内容

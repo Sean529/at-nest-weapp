@@ -5,9 +5,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { generateId } from '../utils';
 import { IResponse } from '../type/response.type';
 import { EssayComment } from '../entity/essayComment.entity';
-import { CreateEssayCommentDto } from '../dto/createEssayComment.dto';
 import { UserInfo } from '../entity/userInfo.entity';
 import { UserEssay } from '../entity/userEssay.entity';
+import { CreateEssayCommentDto } from '../dto/createEssayComment.dto';
 
 @Injectable()
 export class EssayCommentService {

@@ -26,10 +26,10 @@ export class CommentReplyController {
   }
 
   // 获取文章评论列表
-  @Get('list')
-  @UseGuards(AuthGuard('jwt'))
-  async getList(@Query() query: listDto) {
-    const { page, pageSize, commentId } = query;
-    return this.essayCommentReplyService.getList(page, pageSize, commentId);
-  }
+  // @Get('list')
+  // @UseGuards(AuthGuard('jwt'))
+  // async getList(@Query() query: listDto) {
+  //   const { page, pageSize, commentId } = query;
+  //   return this.essayCommentReplyService.getList(page, pageSize, commentId);
+  // }
 }

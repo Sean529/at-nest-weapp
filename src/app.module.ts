@@ -8,7 +8,7 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { EssayModule } from './essay/essay.module';
 import { EssayCommentModule } from './comment/comment.module';
-// import { CommentReplyModule } from './commentReply/commentReply.module';
+import { CommentReplyModule } from './commentReply/commentReply.module';
 
 @Module({
   imports: [
@@ -28,6 +28,7 @@ import { EssayCommentModule } from './comment/comment.module';
     UserModule,
     EssayModule,
     EssayCommentModule,
+    CommentReplyModule,
   ],
   controllers: [AppController],
   providers: [AppService],
