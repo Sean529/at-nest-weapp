@@ -83,7 +83,7 @@ export class EssayCommentService {
       .leftJoinAndSelect('comment.essayInfo', 'essay_id') // essay_id 是entity中的 JoinColumn name
       .leftJoinAndSelect('comment.userInfo', 'user_id')
       .orderBy('comment.createdAt', 'DESC')
-      .where({ essayInfo }) // 通过动态信息查评论
+      .where({ essayInfo }) // 通过动态信息查评论列表
       .take(pageSize) // 取n条
       .skip(pageSize * page) // 跳过n条
       .getManyAndCount();
