@@ -8,13 +8,15 @@ import { CommentReplyController } from './commentReply.controller';
 import { EssayCommentReplyService } from './commentReply.service';
 import { EssayComment } from '../entity/essayComment.entity';
 import { UserInfo } from '../entity/userInfo.entity';
-import { CommentReply } from '../entity/commentReply.entity';
+import { EssayCommentReply } from '../entity/commentReply.entity';
+import { UserEssay } from '../entity/userEssay.entity';
 
 @Module({
   imports: [
     HttpModule,
     CacheModule,
-    TypeOrmModule.forFeature([CommentReply]),
+    TypeOrmModule.forFeature([EssayCommentReply]),
+    TypeOrmModule.forFeature([UserEssay]),
     TypeOrmModule.forFeature([EssayComment]),
     TypeOrmModule.forFeature([UserInfo]),
   ],

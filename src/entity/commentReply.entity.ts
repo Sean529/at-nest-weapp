@@ -9,12 +9,13 @@ import {
 import { BaseEntity } from './BaseEntity';
 import { UserInfo } from './userInfo.entity';
 import { EssayComment } from './essayComment.entity';
+import { UserEssay } from './userEssay.entity';
 
 /**
  * 评论回复表
  */
-@Entity({ name: 'comment_reply' })
-export class CommentReply extends BaseEntity {
+@Entity({ name: 'essay_comment_reply' })
+export class EssayCommentReply extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -36,6 +37,13 @@ export class CommentReply extends BaseEntity {
   @ManyToOne(() => UserInfo, (user) => user.userId)
   @JoinColumn({ name: 'user_id' })
   userInfo: UserInfo;
+
+  /**
+   * 多个回复对应一个动态
+   */
+  @ManyToOne(() => UserEssay, (essay) => essay.essayId)
+  @JoinColumn({ name: 'essay_id' })
+  essayInfo: UserEssay;
 
   /**
    * 多个回复对应一个评论
